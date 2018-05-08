@@ -1,0 +1,6 @@
+maestro,1,Juan,ITI,juan@gmail.com,018341892714
+alumno,1530076,Yuridia Guadalupe Montelongo Padilla,ITI,1530076@upv.edu.mx,018341892714
+alumno,1530074,Monse,MANU,1530074@upv.edu.mx,018341892714
+maestro,2,Valentin Elizalde,MECA,veli@gmail.com,8439339
+alumno,1530076,Violeta,ITI,veli@gmail.com,018341892714
+maestro,3,Hortencio,PYMES,ho@gmail.com,548698
