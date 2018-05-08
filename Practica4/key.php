@@ -1,4 +1,5 @@
 <?php
+//se cargan los datos de un registro dependiendo del id
 include_once('utilities.php');
 $id = isset( $_GET['id'] ) ? $_GET['id'] : '';
 if( !array_key_exists($id, $user_access1) )

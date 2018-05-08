@@ -1,4 +1,5 @@
 <?php 
+//registro de los datos ingresados al .txt
  if(isset($_POST["agregar"])){
 
   $idempleado = $_POST["num"];
@@ -6,9 +7,11 @@
   $carrera = $_POST["carrera"];
   $email = $_POST["email"];
   $tel = $_POST["tel"];
-
+  //se abre el archivo o se crea si no existe
   $file=fopen("registros.txt", "a+");
+  //ingresa los datos al archivo
   fputs($file, "maestro" . "," . $idempleado . "," . $nombre . "," . $carrera . "," . $email . "," . $tel . "\r\n");
+  //cierra el archivo
   fclose($file);
  }
 

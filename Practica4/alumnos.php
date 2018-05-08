@@ -1,6 +1,7 @@
 <?php
 include_once('utilities.php');
 //$user_access = [];
+//cuenta los registros en el array
 if(isset($user_access1)){
   $total_users = count($user_access1);
 }
@@ -26,7 +27,8 @@ if(isset($user_access1)){
             <div class="content" data-slug="panel1">
               <div class="row">
               </div>
-              <?php if(isset($total_users)){ ?>
+              <?php //revisa que haya registros
+              if(isset($total_users)){ ?>
               <table>
                 <thead>
                   <tr>
@@ -37,7 +39,8 @@ if(isset($user_access1)){
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach( $user_access1 as $id => $user ){ ?>
+                  <?php //ciclo que imprime los registros del array
+                  	foreach( $user_access1 as $id => $user ){ ?>
                   <tr>
                     <td><?php echo $id ?></td>
                     <td><?php echo $user['nombre'] ?></td>
