@@ -31,5 +31,7 @@
 	if(c){
 		//se redireciona con la respuesta del usuario y el mismo id del registro
 		location.href="eliminar_usuarios.php?id="+id2+"&b=1";
+	}else{
+		location.href("index.php");
 	}
 </script>
