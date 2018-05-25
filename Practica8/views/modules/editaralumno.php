@@ -1,13 +1,11 @@
 <?php
-
+	//Se inicia sesion
 	session_start();
-
+	//Se valida la sesion
 	if(!$_SESSION["validar"]){
-
+		//Si no esta loggeado manda al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
 
 ?>
@@ -16,13 +14,17 @@
 	<hr>
 	<br>
 	<?php
+		//Se instancea el controller
 		$modA = new MvcController();
+		//Se llama al controlador de editar
 		$modA -> editarAlumnoController();
+		//Se llama al controlador de modificar
 		$modA -> modificarAlumnoController();
 	?>
 </form>
 
 <?php
+	//se obtiene el action
 	if(isset($_GET["action"])){
 
 		if($_GET["action"] == "fallo"){

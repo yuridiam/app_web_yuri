@@ -1,13 +1,11 @@
 <?php
-
+	//Se inicia sesion
 	session_start();
-
+	//Se valida la sesion
 	if(!$_SESSION["validar"]){
-
+		//Si no esta loggeado manda al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
 
 ?>
@@ -30,9 +28,11 @@
 		</thead>
 		<tbody>
 			<?php
-
+			//Se instancea el controlador
 			$vistaMaestro = new MvcController();
+			//Se llama al controlador de vista
 			$vistaMaestro -> vistaMaestrosController();
+			//Se llama al controlador de borrar
 			$vistaMaestro -> borrarMaestroController();
 
 			?>

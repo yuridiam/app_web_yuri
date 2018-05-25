@@ -52,26 +52,25 @@
     <br>
 
       <?php
-
+        //se validan los tipos de action que hay ya que existen dos menus de navegacion diferentes
         if(isset($_GET["action"])){
           if($_GET["action"]=="maestros" || $_GET["action"]=="alumnos" || $_GET["action"]=="carreras" || $_GET["action"]=="registraralumno" || $_GET["action"]=="registrarcarrera" || $_GET["action"]=="registrarmaestro" || $_GET["action"]=="editaralumno" || $_GET["action"]=="editarcarrera" || $_GET["action"]=="editarmaestro"){
               include("modules/navegacion.php");
-          }elseif ($_GET["action"]=="tutorias" || $_GET["action"]=="registrartutoria" || $_GET["action"]=="editartutoria") {
+          }elseif ($_GET["action"]=="tutorias" || $_GET["action"]=="registrartutoria" || $_GET["action"]=="detallestutoria") {
               include("modules/navegacion2.php");
           }
         }
       ?>
       <br>
       <?php
+        //Se crea una instancia del controlador
         $mvc = new MvcController();
+        //Se manda a llamar el controlador de las paginas
         $mvc->enlacesPaginasController();
       ?> 
-      <script type="text/javascript">
-          $(document).ready(function() {
-              $(".js-example-basic-single").select2();
-              $('#example').DataTable();
-          });
-      </script> 
+      <br>
+      <hr style="width: 90%; margin-left: 100px">
+      <label style="margin-left: 1080px; margin-top: -10px">Yuridia Guadalupe Monteongo Padilla</label><br>
 
   </body>
 </html>

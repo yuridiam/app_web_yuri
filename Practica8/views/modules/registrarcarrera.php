@@ -1,13 +1,11 @@
 <?php
-
+	//Se inicia la sesion
 	session_start();
-
+	//Se valida la sesion
 	if(!$_SESSION["validar"]){
-
+		//Si no esta loggeado manda al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
 
 ?>
@@ -22,11 +20,11 @@
 </form>
 
 <?php
-	
-	
+	//Se instancea el controlador
 	$regC = new MvcController();
+	//Se llama al controlador de registrar
 	$regC -> registrarCarreraController();
-
+	//Se valida el action
 	if(isset($_GET["action"])){
 
 		if($_GET["action"] == "fallo"){

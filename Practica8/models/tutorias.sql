@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-05-2018 a las 03:23:20
+-- Tiempo de generación: 25-05-2018 a las 11:04:02
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -41,10 +41,18 @@ CREATE TABLE `alumno` (
 --
 
 INSERT INTO `alumno` (`matricula`, `nombre`, `id_carrera`, `id_tutor`, `eliminado`) VALUES
-(1530073, 'Benito', 5, 1530076, 0),
-(1530074, 'Yuridia Guadalupe Montelongo Padilla', 5, 1530076, 0),
-(1530075, 'Monse', 2, 1530076, 0),
-(1533080, 'Juan Padilla P', 2, 1530076, 0);
+(1530043, 'Miguel HernÃ¡ndez', 2, 847487, 1),
+(1530047, 'Jose Antonio Molina de la Fuente', 1, 4949847, 0),
+(1530049, 'Monse Montelongo Padilla', 5, 4949847, 1),
+(1530065, 'Moises', 4, 847487, 1),
+(1530073, 'Benito Briones', 1, 4949847, 1),
+(1530074, 'Yuridia Guadalupe Montelongo Padilla', 5, 1530076, 1),
+(1530075, 'Monse', 2, 1530076, 1),
+(1530076, 'Yuridia Guadalupe Montelongo Padilla', 1, 1593848, 0),
+(1530082, 'Sergio Perez Picasso', 2, 847487, 1),
+(1530269, 'Mariana Hinojosa', 1, 847487, 0),
+(1530456, 'Erick Elizondo', 1, 5985494, 0),
+(1533080, 'Juan Padilla P', 2, 1530076, 1);
 
 -- --------------------------------------------------------
 
@@ -68,7 +76,10 @@ INSERT INTO `carrera` (`id`, `nombre`, `siglas`, `eliminado`) VALUES
 (2, 'Ingenieria en Mecatronica', 'IM', 0),
 (3, 'Ingenieria en Tecnologias de Manufactura', 'ITM', 0),
 (4, 'Ingenieria en Sistemas Automotrices', 'ISA', 0),
-(5, 'Licenciatura en Pequeñas y Medianas Empresas', 'PYMES', 0);
+(5, 'Licenciatura en Pequeñas y Medianas Empresas', 'PYMES', 0),
+(6, 'Videojuegos', 'VD', 1),
+(7, 'ldksjlvklfk', 'MDN', 1),
+(8, 'Videojuegos', 'VDlfk', 1);
 
 -- --------------------------------------------------------
 
@@ -90,7 +101,11 @@ CREATE TABLE `maestro` (
 --
 
 INSERT INTO `maestro` (`idempleado`, `id_carrera`, `nombre`, `email`, `pass`, `eliminado`) VALUES
-(1530076, 5, 'Yuridia Guadalupe Montelongo Padilla', 'yuridia@gmail.com', '123', 0);
+(847487, 1, 'Omar Jasso', 'omar@gmail.com', 'omar123', 0),
+(1530076, 5, 'Yuridia Guadalupe Montelongo Padilla', 'yuridia@gmail.com', '123', 1),
+(1593848, 1, 'Mario Rodriguez', 'mr@gmail.com', 'mario123', 0),
+(4949847, 1, 'Alberto Garcia', 'alberto@gmail.com', 'a123', 0),
+(5985494, 5, 'Alma Leticia', 'alma@gmail.com', 'alma123', 0);
 
 -- --------------------------------------------------------
 
@@ -101,12 +116,24 @@ INSERT INTO `maestro` (`idempleado`, `id_carrera`, `nombre`, `email`, `pass`, `e
 CREATE TABLE `tutoria` (
   `id` int(11) NOT NULL,
   `id_maestro` int(11) NOT NULL,
-  `hora` varchar(7) NOT NULL,
+  `hora` varchar(15) NOT NULL,
   `fecha` varchar(10) NOT NULL,
   `tutoria` varchar(150) NOT NULL,
-  `tipo` varchar(10) NOT NULL,
   `eliminado` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tutoria`
+--
+
+INSERT INTO `tutoria` (`id`, `id_maestro`, `hora`, `fecha`, `tutoria`, `eliminado`) VALUES
+(7, 847487, '13:00', '2018-05-24', 'lkfjd', 1),
+(17, 847487, '13:59', '2018-10-30', 'kljs', 1),
+(18, 847487, '13:10', '2018-05-26', 'Asuntos sobre el cuatrimestre actual', 0),
+(19, 4949847, '13:00', '2018-06-08', 'kfjkj', 1),
+(20, 4949847, '08:58', '2018-05-31', 'Importante', 0),
+(21, 1593848, '13:50', '2018-06-01', 'Clase', 0),
+(22, 5985494, '13:57', '2018-12-31', 'lfk', 1);
 
 -- --------------------------------------------------------
 
@@ -119,6 +146,22 @@ CREATE TABLE `tutoria_detalles` (
   `id_maestro` int(11) NOT NULL,
   `id_alumno` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tutoria_detalles`
+--
+
+INSERT INTO `tutoria_detalles` (`id_tutoria`, `id_maestro`, `id_alumno`) VALUES
+(7, 847487, 1530269),
+(17, 847487, 1530269),
+(17, 847487, 1530269),
+(18, 847487, 1530269),
+(19, 4949847, 1530073),
+(19, 4949847, 1530047),
+(20, 4949847, 1530047),
+(20, 4949847, 1530073),
+(21, 1593848, 1530076),
+(22, 5985494, 1530456);
 
 --
 -- Índices para tablas volcadas
@@ -156,9 +199,9 @@ ALTER TABLE `tutoria`
 -- Indices de la tabla `tutoria_detalles`
 --
 ALTER TABLE `tutoria_detalles`
-  ADD UNIQUE KEY `id_tutoria` (`id_tutoria`),
-  ADD UNIQUE KEY `id_maestro` (`id_maestro`),
-  ADD UNIQUE KEY `id_alumno` (`id_alumno`);
+  ADD KEY `id_maestro` (`id_maestro`) USING BTREE,
+  ADD KEY `id_tutoria` (`id_tutoria`) USING BTREE,
+  ADD KEY `id_alumno` (`id_alumno`) USING BTREE;
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -168,13 +211,13 @@ ALTER TABLE `tutoria_detalles`
 -- AUTO_INCREMENT de la tabla `carrera`
 --
 ALTER TABLE `carrera`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `tutoria`
 --
 ALTER TABLE `tutoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Restricciones para tablas volcadas

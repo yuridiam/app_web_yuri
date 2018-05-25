@@ -1,13 +1,11 @@
 <?php
-
+	//Se inicia la sesion
 	session_start();
-
+	//Se valida la sesion y si no esta loggeado no lo deja entrar
 	if(!$_SESSION["validar"]){
-
+		//se dirige al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
 
 ?>
@@ -29,9 +27,11 @@
 		</thead>
 		<tbody>
 			<?php
-
+			//se crea una instancia del controlador
 			$vistaAlumno = new MvcController();
+			//se manda a llamar el controlador de la vista
 			$vistaAlumno -> vistaAlumnosController();
+			//se manda a llamar el controlador de borrar
 			$vistaAlumno -> borrarAlumnoController();
 
 			?>

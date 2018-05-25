@@ -1,18 +1,14 @@
 <?php
-
+	//Se inicia la sesion
 	session_start();
-
+	//Se valida la sesion
 	if(!$_SESSION["validar"]){
-
+		//Si no esta loggeado manda al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
-
+	//Se instancea el controlador
 	$mvc = new MvcController();
-	$carreras = $mvc->traerCarrerasController();
-	$tutores = $mvc->traerMaestrosController();
 
 ?>
 <form method="post" style="font-family: Arial; width: 50%; margin-left: 350px">
@@ -23,21 +19,15 @@
 	<input type="text" name="nombre" placeholder="Nombre" required>
 	<select class="js-example-basic-single" name="carrera">
 	<?php
-		foreach ($carreras as $fila) {
-	?>
-			<option value="<?php echo $fila['id'];?>"><?php echo $fila["nombre"];?></option>
-	<?php		
-		}
+		//SE llama al controlador de carreras
+		$mvc->traerCarrerasController();
 	?>
 	</select>
 	<br><br>
 	<select class="js-example-basic-single" name="tutor">
 	<?php
-		foreach ($tutores as $fila) {
-	?>
-			<option value="<?php echo $fila['idempleado'];?>"><?php echo $fila["nombre"];?></option>
-	<?php		
-		}
+		//Se llama al controlador de maestros
+		$mvc->traerMaestrosController();
 	?>
 	</select>
 	<br><br>
@@ -45,11 +35,11 @@
 </form>
 
 <?php
-	
-	
+	//Se instancea el controlador
 	$regA = new MvcController();
+	//Se llama al controlador de registrar
 	$regA -> registrarAlumnoController();
-
+	//Se valida el action
 	if(isset($_GET["action"])){
 
 		if($_GET["action"] == "fallo"){

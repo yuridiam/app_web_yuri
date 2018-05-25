@@ -1,18 +1,22 @@
 <?php
-
+	//se inicia sesion
 	session_start();
-
+	//se valida la sesion
 	if(!$_SESSION["validar"]){
-
+		//Si no esta loggeado manda al login
 		header("location:index.php?action=ingresar");
-
 		exit();
-
 	}
-	$id = $_GET["id"];
-	$id2 = $_GET["iddos"];
+	//Se almacenan las variables del url
+	if(isset($_GET["id"])){
+		$id = $_GET["id"];
+	}
+	if(isset($_GET["iddos"])){
+		$id2 = $_GET["iddos"];
+	}
 
 ?>
+<label style="margin-left: 850px">Bienvenido, <?php echo $id?></label>
 <form style="font-family: Arial; width: 50%; margin-left: 350px">
 	<h1>Tutorías</h1>
 	<hr>
@@ -22,20 +26,20 @@
 	<br>
 	<table id="example" class="display" width="100%">
 		<thead>
-			<th>Maestro</th>
 			<th>Hora</th>
 			<th>Fecha</th>
 			<th>Tutoria</th>
-			<th>Tipo</th>
 			<th></th>
 			<th></th>
 		</thead>
 		<tbody>
 			<?php
-
-			//$vistaTutoria = new MvcController();
-			//$vistaTutoria -> vistaAlumnosController();
-			//$vistaTutoria -> borrarAlumnoController();
+			//Se instancea el controlador
+			$vistaTutoria = new MvcController();
+			//Se llama el controlador de vista
+			$vistaTutoria -> vistaTutoriasController();
+			//Se llama el controlador de borrar
+			$vistaTutoria -> borrarTutoriaController();
 
 			?>
 
