@@ -18,6 +18,9 @@
           $(document).ready(function() {
               $(".js-example-basic-single").select2();
               $('#example').DataTable();
+              $('#example2').DataTable();
+              $('#example3').DataTable();
+              $('#example4').DataTable();
           });
           //Se inicializan variables globales
           var alumnos="";
@@ -42,6 +45,6 @@
          		alumnos = alumnos + v;
          		al.innerHTML="Alumnos añadidos: "+cont;
          	}
-         	h.value=alumnos;
+            h.value=alumnos;
          }
 </script>

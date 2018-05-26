@@ -367,6 +367,29 @@ Class Datos extends Conexion{
 		//Se cierra la consulta
 		$stmt->close();
 	}
+
+	//Modelo que busca un alumno en especifico
+	public function buscarTutModel(){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM tutoria");
+		//Se ejecuta la consulta
+		$stmt->execute();
+		//Se retorna el resultado
+		return $stmt->fetchAll();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	public function buscarNombreTutorModel($id){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM maestro WHERE idempleado='$id'");
+		//Se ejecuta la consulta
+		$stmt->execute();
+		//Se retorna el resultado
+		return $stmt->fetch();
+		//Se cierra la consulta
+		//$stmt->close();
+	}
 }
 
 ?>

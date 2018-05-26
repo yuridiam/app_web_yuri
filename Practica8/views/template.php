@@ -54,7 +54,7 @@
       <?php
         //se validan los tipos de action que hay ya que existen dos menus de navegacion diferentes
         if(isset($_GET["action"])){
-          if($_GET["action"]=="maestros" || $_GET["action"]=="alumnos" || $_GET["action"]=="carreras" || $_GET["action"]=="registraralumno" || $_GET["action"]=="registrarcarrera" || $_GET["action"]=="registrarmaestro" || $_GET["action"]=="editaralumno" || $_GET["action"]=="editarcarrera" || $_GET["action"]=="editarmaestro"){
+          if($_GET["action"]=="maestros" || $_GET["action"]=="alumnos" || $_GET["action"]=="carreras" || $_GET["action"]=="registraralumno" || $_GET["action"]=="registrarcarrera" || $_GET["action"]=="registrarmaestro" || $_GET["action"]=="editaralumno" || $_GET["action"]=="editarcarrera" || $_GET["action"]=="editarmaestro" || $_GET["action"]=="reportes"){
               include("modules/navegacion.php");
           }elseif ($_GET["action"]=="tutorias" || $_GET["action"]=="registrartutoria" || $_GET["action"]=="detallestutoria") {
               include("modules/navegacion2.php");

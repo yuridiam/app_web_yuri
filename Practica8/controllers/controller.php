@@ -561,7 +561,83 @@ Class MvcController{
 		}
 	}
 
+	//Funcion controlador que muestra los datos existentes en la vista de alumnos
+	public function vistaAController(){
+		//Se manda a llamar el modelo que genera la consulta select para mostrar los alumnos existentes en la bd
+		$respuesta = Datos::consultarModel("alumno");
+		//si la consulta en el modelo se ejecuta exitosamente se recorre el array devuelto para imprimir los alumnos
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				//para poder cambiar el id de la carrera para que se muestre solo el nombre se ejecuta otro modelo que busca el nombre de la carrera por su id
+				$carrera = Datos::buscarCarreraModel($fila["id_carrera"]);
+				//para el tutor se ejecuta otro modelo que busca sus datos y muestra su nombre en la tabla
+				$tutor = Datos::buscarTutorModel($fila["id_tutor"]);
+				//se imprimen las filas de las tablas
+				echo'<tr>
+				<td>'.$fila["matricula"].'</td>
+				<td>'.$fila["nombre"].'</td>
+				<td>'.$carrera["siglas"].'</td>
+				<td>'.$tutor["nombre"].'</td>
+				</tr>';
+			}
+		}
+			
+	}
 
+	//Funcion controlador que muestra los datos existentes en la vista de maestros
+	public function vistaMController(){
+		//Se manda a llamar el modelo que genera la consulta select para mostrar los maestros existentes en la bd
+		$respuesta = Datos::consultarModel("maestro");
+		//si la consulta en el modelo se ejecuta exitosamente se recorre el array devuelto para imprimir los maestros
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				//para poder cambiar el id de la carrera para que se muestre solo el nombre se ejecuta otro modelo que busca el nombre de la carrera por su id
+				$carrera = Datos::buscarCarreraModel($fila["id_carrera"]);
+				//se imprimen las filas de las tablas
+				echo'<tr>
+				<td>'.$fila["idempleado"].'</td>
+				<td>'.$fila["nombre"].'</td>
+				<td>'.$carrera["siglas"].'</td>
+				<td>'.$fila["email"].'</td>
+					<td>'.$fila["pass"].'</td>
+				</tr>';
+			}
+		}
+	}
+
+	//Funcion controlador que muestra las carreras existentes en la base de datos
+	public function vistaCController(){
+		//Se ejecuta el modelo que tiene la consulta de todas las carreras
+		$respuesta = Datos::consultarModel("carrera");
+		//Si la consulta se ejecuta se imprimen todas los resultados en la vista
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				echo'<tr>
+				<td>'.$fila["id"].'</td>
+				<td>'.$fila["nombre"].'</td>
+				<td>'.$fila["siglas"].'</td>
+				</tr>';
+			}
+		}	
+	}
+
+	//Funcion controlador que muestra todas las tutorias del tutor que haya ingresado
+	public function vistaTController(){
+		$respuesta = Datos::buscarTutModel();
+		if($respuesta){
+			//Si se ejecuta se imprime por cada registro una fila en la tabla
+			foreach ($respuesta as $fila) {
+				$i = $fila["id_maestro"];
+				$nombre = Datos::buscarNombreTutorModel($i);
+				echo'<tr>
+				<td>'.$nombre["nombre"].'</td>
+				<td>'.$fila["hora"].'</td>
+				<td>'.$fila["fecha"].'</td>
+				<td>'.$fila["tutoria"].'</td>
+			</tr>';
+			}
+		}
+	}
 
 }
 
