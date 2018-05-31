@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-05-2018 a las 08:40:22
+-- Tiempo de generación: 31-05-2018 a las 10:54:42
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -25,14 +25,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `entradas`
+-- Estructura de tabla para la tabla `categorias`
 --
 
-CREATE TABLE `entradas` (
-  `id` int(11) NOT NULL,
-  `id_articulo` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `fecha` varchar(10) NOT NULL
+CREATE TABLE `categorias` (
+  `id_categoria` int(11) NOT NULL,
+  `nombre_categoria` varchar(100) NOT NULL,
+  `descripcion_categoria` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial`
+--
+
+CREATE TABLE `historial` (
+  `id_historial` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha` varchar(10) NOT NULL,
+  `nota` varchar(200) NOT NULL,
+  `referencia` varchar(100) NOT NULL,
+  `cantidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -42,25 +57,25 @@ CREATE TABLE `entradas` (
 --
 
 CREATE TABLE `productos` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `descripcion` varchar(100) NOT NULL,
-  `unidadmedida` varchar(10) NOT NULL,
-  `stock_actual` int(11) NOT NULL
+  `id_producto` int(11) NOT NULL,
+  `codigo_producto` varchar(20) NOT NULL,
+  `nombre_producto` varchar(100) NOT NULL,
+  `precio_producto` double NOT NULL,
+  `stock` int(11) NOT NULL,
+  `id_categoria` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `salidas`
+-- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `salidas` (
-  `id` int(11) NOT NULL,
-  `id_articulo` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `ubicacion` varchar(100) NOT NULL,
-  `fecha` varchar(10) NOT NULL
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `usuario` varchar(20) NOT NULL,
+  `pass` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -68,44 +83,76 @@ CREATE TABLE `salidas` (
 --
 
 --
--- Indices de la tabla `entradas`
+-- Indices de la tabla `categorias`
 --
-ALTER TABLE `entradas`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id_categoria`);
+
+--
+-- Indices de la tabla `historial`
+--
+ALTER TABLE `historial`
+  ADD PRIMARY KEY (`id_historial`),
+  ADD KEY `id_producto` (`id_producto`),
+  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id_producto`),
+  ADD KEY `id_categoria` (`id_categoria`);
 
 --
--- Indices de la tabla `salidas`
+-- Indices de la tabla `usuarios`
 --
-ALTER TABLE `salidas`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `entradas`
+-- AUTO_INCREMENT de la tabla `categorias`
 --
-ALTER TABLE `entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `categorias`
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `historial`
+--
+ALTER TABLE `historial`
+  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `salidas`
+-- AUTO_INCREMENT de la tabla `usuarios`
 --
-ALTER TABLE `salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `historial`
+--
+ALTER TABLE `historial`
+  ADD CONSTRAINT `historial_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`),
+  ADD CONSTRAINT `historial_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

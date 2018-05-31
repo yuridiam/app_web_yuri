@@ -40,7 +40,7 @@ Class MvcController{
 				//se valida como verdadera
 				$_SESSION["validar"] = true;
 				//se dirige a la vista de un superadmin
-				header("location:index.php?action=productos");
+				header("location:index.php?action=dashboard");
 
 			}
 

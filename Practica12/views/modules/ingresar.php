@@ -1,12 +1,23 @@
-<form method="post" align="center" style="font-family: Arial; width: 30%; margin-left: 470px; margin-top: 100px">
-	<h1 style="font-weight: bold; color: #00715F">Iniciar Sesión</h1>
-	<label>Sistema de Inventario</label>
-	<hr>
-	<input type="text" name="usuario" placeholder="Usuario" required>
-	<input type="password" name="contra" placeholder="Contraseña" required>
-	<br>
-	<input type="submit" name="ingresar" class="button tiny" style="background-color: #00715F" value="Ingresar">
-</form>
+<div class="login-box" >
+  <div class="login-logo">
+    <a>Sistema de <b>Inventario</b></a>
+  </div>
+	<div class="card">
+		<div class="card-body login-card-body" style="background-color: #F0F0F0">
+			<form method="post">
+				<p align="center">Iniciar Sesión</p>
+        		<div class="form-group has-feedback">
+          			<input type="text" name="usuario" placeholder="Usuario" required>
+        		</div>
+        		<div class="form-group has-feedback">
+          			<input type="password" name="contra" placeholder="Contraseña" required>
+        		</div>
+        		<input type="submit" name="ingresar" class="btn btn-block btn-warning btn-flat" value="Ingresar">
+      </form>
+		</div>
+	</div>
+</div>
+
 
 <?php
 	//Se instancea el controlador
