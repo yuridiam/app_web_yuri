@@ -12,7 +12,7 @@
         		<div class="form-group has-feedback">
           			<input type="password" name="contra" placeholder="Contraseña" required>
         		</div>
-        		<input type="submit" name="ingresar" class="btn btn-block btn-warning btn-flat" value="Ingresar">
+        		<input type="submit" name="ingresar" class="btn btn-block btn-success btn-flat" value="Ingresar">
       </form>
 		</div>
 	</div>

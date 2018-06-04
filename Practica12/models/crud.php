@@ -5,12 +5,13 @@ require_once("conexion.php");
 //Clase general que contiene todos los modelos que consume el controlador principal y que exitene la clase conexion que se encuentra en el modelo conexion
 Class Datos extends Conexion{
 
-	//Modelo que selecciona los datos de un maestro si este ya esta registrado
-	/*public function ingresoUsuarioModel($datosModel, $tabla){
-		//se obtiene el correo que sera la condicion con la que se buscara
-		$e = $datosModel["correo"];
+	//Modelo que consulta los datos que se mandaron desde el controlador en la base de datos
+	public function ingresoUsuarioModel($datosModel, $tabla){
+		//Se almacenan los datos del array datosModel en variables separadas
+		$u = $datosModel["usuario"];
+		$c = $datosModel["contra"];
 		//Se prepara la consulta
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE email = '$e' AND eliminado=0");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE usuario = '$u' AND pass = '$c' AND eliminado=0");
 		//Se ejecuta la consulta
 		$stmt->execute();
 		//Se retorna la fila si es que existe
@@ -18,7 +19,288 @@ Class Datos extends Conexion{
 		//se cierra la consulta
 		$stmt->close();
 
-	}*/
+	}
+
+	//Modelo que agrega una categoria a la base de datos
+	public function agregarCategoriaModel($tabla, $datosModel){
+		//se almacenan los datos en variables
+		$nom = $datosModel["nombre"];
+		$desc = $datosModel["desc"];
+		$fecha = $datosModel["fecha"];
+		//se ejecuta la consulta
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre_categoria,descripcion_categoria,fecha_registro) VALUES('$nom','$desc','$fecha')");
+		//se retorna el resultado de la consulta
+		return $stmt->execute();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+	//Modelo que agrega un usuario a la base de datos
+	public function agregarUsuarioModel($tabla, $datosModel){
+		//se almacenan los datos en variables
+		$nom = $datosModel["nombre"];
+		$usuario = $datosModel["usuario"];
+		$contra = $datosModel["contra"];
+		$fecha = $datosModel["fecha"];
+		//se ejecuta la consulta
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre,usuario,pass,fecha_registro) VALUES('$nom','$usuario','$contra','$fecha')");
+		//se retorna el resultado de la consulta
+		return $stmt->execute();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que consulta los datos de diferentes tablas que utiliza el controler
+	public function consultarModel($tabla){
+
+		if($tabla != "historial"){
+			//se prepara la consulta
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0");
+		}else{
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0 ORDER BY id_historial DESC LIMIT 10");
+		}
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->fetchAll();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que cuenta los registros de diferentes tablas
+	public function totalesModel($tabla){
+		//se prepara la consulta
+		if($tabla!="historial"){
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0");
+		}else{
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+		}
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->rowCount();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que agrega un producto a la base de datos
+	public function agregarProductoModel($tabla, $datosModel){
+		//se almacenan los datos en variables
+		$cod = $datosModel["codigo"];
+		$nom = $datosModel["nombre"];
+		$precio = $datosModel["precio"];
+		$stock = $datosModel["stock"];
+		$cat = $datosModel["cat"];
+		$fecha = $datosModel["fecha"];
+		//se ejecuta la consulta
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (codigo_producto,nombre_producto,precio_producto,stock,id_categoria,fecha_registro) VALUES('$cod','$nom','$precio','$stock','$cat','$fecha')");
+		//se retorna el resultado de la consulta
+		return $stmt->execute();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que busca una categoria en la base de datos
+	public function buscarCategoriaModel($id){
+		//se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM categorias WHERE id_categoria=$id");
+		//se ejecuta la consulta
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();		
+	}
+
+	//Modelo que busca un usuario en la base de datos
+	public function buscarUsuarioModel($usuario, $contra){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM usuarios WHERE id_usuario='$usuario' AND pass='$contra'");
+		//se ejecuta la consulta
+		if($stmt->execute()){
+			return "success";
+		}else{
+			return "error";
+		}
+		$stmt->close();
+	}
+
+	//Modelo que elimina un producto de la base de datos
+	public function eliminarProductoModel($produ){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE productos SET eliminado=1 WHERE id_producto='$produ'");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		$stmt->close();
+	}
+
+	//Modelo que busca una producto en la base de datos
+	public function buscarProductoModel($id){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_producto='$id'");
+		//se ejecuta la consulta
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+
+	//Modelo que modifica un producto de la base de datos
+	public function modificarProductoModel($tabla, $datosModel,$id){
+		//Se almacenan las variables
+		$cod = $datosModel["codigo"];
+		$nom = $datosModel["nombre"];
+		$precio = $datosModel["precio"];
+		$stock = $datosModel["stock"];
+		$cat = $datosModel["cat"];
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET codigo_producto = '$cod', nombre_producto='$nom', precio_producto='$precio', stock='$stock', id_categoria='$cat' WHERE id_producto='$id'");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que busca un producto por historial
+	public function buscarProHistorialModel($idprodu){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM historial WHERE id_producto='$idprodu'");
+		//se ejecuta la consulta
+		$stmt->execute();
+		//Se devuelven todos registros encontrados
+		return $stmt->fetchAll();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que busca un usuario en la base de datos
+	public function buscarU($id){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM usuarios WHERE id_usuario='$id'");
+		//se ejecuta la consulta
+		$stmt->execute();
+		//Se devuelve el registro encontrado
+		return $stmt->fetch();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que agrega o quita stock 
+	public function agregarOquitarStockModel($datosModel){
+		//Se almacenan las variables
+		$producto = $datosModel["id_producto"];
+		$usuario = $datosModel["id_usuario"];
+		$fecha = $datosModel["fecha"];
+		$hora = $datosModel["hora"];
+		$nota = $datosModel["nota"];
+		$ref = $datosModel["ref"];
+		$cant = $datosModel["cantidad"];
+		$mov = $datosModel["mov"];
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("INSERT INTO historial (id_producto,id_usuario,fecha,hora,nota,referencia,cantidad,movimiento) VALUES('$producto','$usuario','$fecha','$hora','$nota','$ref','$cant','$mov')");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que suma o resta al stock actual de un producto en la base de datos
+	public function sumarYrestarStockModel($cantidad, $id, $op){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_producto='$id'");
+		$stmt->execute();
+		$p = $stmt->fetch();
+		if($p){
+			if($op==1){
+				$stock_nuevo = $cantidad + $p["stock"];
+			}else{
+				$stock_nuevo = $p["stock"] - $cantidad;
+				if($stock_nuevo<0){
+					$stock_nuevo = 0;
+				}
+			}
+			//Se prepara la consulta
+			$stmt2 = Conexion::conectar()->prepare("UPDATE productos SET stock='$stock_nuevo' WHERE id_producto='$id'");
+			//se ejecuta la consulta
+			return $stmt2->execute();
+			//Se cierra la consulta
+			$stmt->close();
+			$stmt2->close();
+		}
+	}
+
+	//Modelo que modifica una categoria de la base de datos
+	public function modificarCategoriaModel($tabla, $datosModel){
+		//Se almacenan las variables
+		$id = $datosModel["id"];
+		$nombre = $datosModel["nombre"];
+		$desc = $datosModel["desc"];
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre_categoria='$nombre', descripcion_categoria='$desc' WHERE id_categoria='$id'");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que elimina una categoria de la base de datos logicamente
+	public function eliminarCategoriaModel($categoria){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE categorias SET eliminado=1 WHERE id_categoria='$categoria'");
+		//se ejecuta la consulta
+		$r = $stmt->execute();
+		if($r){
+			//Se prepara la consulta
+			$stmt2 = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_categoria='$categoria'");
+			//se ejecuta la consulta
+			$stmt2->execute();
+			//Se devuelven los registros encontrados
+			$r2 = $stmt2->fetchAll();
+			if($r2){
+				foreach ($r2 as $fila) {
+					$p = $fila["id_producto"];
+					//Se prepara la consulta
+					$stmt3 = Conexion::conectar()->prepare("UPDATE historial SET eliminado=1 WHERE id_producto='$p'");
+					//se ejecuta la consulta		
+					$stmt3->execute();
+				}
+				//Se prepara la consulta
+				$stmt4 = Conexion::conectar()->prepare("UPDATE productos SET eliminado=1 WHERE id_categoria='$categoria'");
+				//se ejecuta la consulta
+				return $stmt4->execute();
+			}
+			//Se cierra la consulta
+			$stmt2->close();
+			$stmt3->close();
+			$stmt4->close();
+			$stmt->close();
+		}
+	}
+
+	//Modelo que modifica un usuario de la base de datos
+	public function modificarUsuarioModel($tabla, $datosModel){
+		//Se almacenan las variables
+		$id = $datosModel["id"];
+		$nombre = $datosModel["nombre"];
+		$usuario = $datosModel["usuario"];
+		$contra = $datosModel["contra"];
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre='$nombre', usuario='$usuario', pass='$contra' WHERE id_usuario='$id'");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		//Se cierra la consulta
+		$stmt->close();
+	}
+
+	//Modelo que elimina un usuario de la base de datos
+	public function eliminarUsuarioModel($usuario){
+		//Se prepara la consulta
+		$stmt = Conexion::conectar()->prepare("UPDATE usuarios SET eliminado=1 WHERE id_usuario='$usuario'");
+		//se ejecuta la consulta
+		return $stmt->execute();
+		//Se cierra la consulta
+		$stmt->close();
+	}
 
 	
 }

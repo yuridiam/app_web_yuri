@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="views/plugins/datatables/dataTables.bootstrap4.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="views/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="views/plugins/select2/select2.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   </head>
@@ -39,11 +40,9 @@
       <?php
         //se validan los tipos de action que hay ya que existen dos menus de navegacion diferentes
         if(isset($_GET["action"])){
-          if($_GET["action"]=="dashboard" || $_GET["action"]=="inventario" || $_GET["action"]=="usuarios" || $_GET["action"]=="categorias"){
+          if($_GET["action"]=="dashboard" || $_GET["action"]=="inventario" || $_GET["action"]=="usuarios" || $_GET["action"]=="categorias" || $_GET["action"]=="registrarproducto" || $_GET["action"]=="registrarcategoria" || $_GET["action"]=="registrarusuario" || $_GET["action"]=="editarproducto" || $_GET["action"]=="stock" || $_GET["action"]=="agregarstock" || $_GET["action"]=="quitarstock" || $_GET["action"]=="editarcategoria" || $_GET["action"]=="editarusuario"){
               include("modules/navegacion.php");
-          }/*elseif ($_GET["action"]=="tutorias" || $_GET["action"]=="registrartutoria" || $_GET["action"]=="detallestutoria") {
-              include("modules/navegacion2.php");
-          }*/
+          }
         }
       ?>
       <br>
@@ -93,6 +92,7 @@
 <script src="views/dist/js/demo.js"></script>
 <script src="views/plugins/datatables/jquery.dataTables.js"></script>
 <script src="views/plugins/datatables/dataTables.bootstrap4.js"></script>
+<script src="views/plugins/select2/select2.full.min.js"></script>
 <script>
   $(function () {
     $("#example1").DataTable();
@@ -105,4 +105,10 @@
       "autoWidth": false
     });
   });
+</script>
+<script>
+  $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+  })
 </script>

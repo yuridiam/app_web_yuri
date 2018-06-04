@@ -9,6 +9,7 @@
 			}else{
 				$module =  "views/modules/".$enlaces.".php";
 			}
+
 			//se retorna la pagina a la que se dirige
 			return $module;
 

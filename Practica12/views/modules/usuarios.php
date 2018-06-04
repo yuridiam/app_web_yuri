@@ -1,4 +1,6 @@
-<div class="card" style="margin-left: 260px">
+<div class="content-wrapper" style="background-color: white"> 
+      <div class="container-fluid">
+<div class="card">
             <div class="card-header">
               <h3 class="card-title">Usuarios</h3>
             </div>
@@ -9,42 +11,21 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Rendering engine</th>
-                  <th>Browser</th>
-                  <th>Platform(s)</th>
-                  <th>Engine version</th>
-                  <th>CSS grade</th>
+                  <th>Nombre</th>
+                  <th>Usuario</th>
+                  <th>Contraseña</th>
+                  <th>Fecha de Registro</th>
+                  <th></th>
+                  <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 4.0
-                  </td>
-                  <td>Win 95+</td>
-                  <td> 4</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 5.0
-                  </td>
-                  <td>Win 95+</td>
-                  <td>5</td>
-                  <td>C</td>
-                </tr>
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 5.5
-                  </td>
-                  <td>Win 95+</td>
-                  <td>5.5</td>
-                  <td>A</td>
-                </tr>
-                
+                  <?php
+                      //Creacion del objeto y llamado de sus objetos
+                      $vistaU = new MvcController();
+                      $vistaU->vistaUsuarioController();
+                  ?>
+                </tbody>
               </table>
             </div>
             <!-- /.card-body -->
@@ -57,3 +38,9 @@
     </section>
     <!-- /.content -->
   </div>
+
+  <?php
+      //Creacion del objeto y llamado de sus objetos
+      $eliminarU = new MvcController();
+      $eliminarU->eliminarUsuarioController();
+  ?>
