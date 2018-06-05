@@ -489,7 +489,13 @@ Class MvcController{
 					//Se manda a llamar el modelo que actualiza la cantidad del stock
 					$respuesta2 = Datos::sumarYrestarStockModel($cantidad, $id, 2);
 					//Si se actualiza el stock muestra una alerta de exito y se dirige a los detalles del producto
-					if($respuesta2){
+					if($respuesta2 == "error"){
+						echo "<script type='text/javascript'>
+	    					alert('No hay unidades suficientes, no se realizó la acción');
+	  				  		</script>";
+	  					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$id."';</script>";
+
+					}else{
 						echo "<script type='text/javascript'>
 	    					alert('Se ha eliminado del stock');
 	  				  		</script>";

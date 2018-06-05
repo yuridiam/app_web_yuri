@@ -216,15 +216,16 @@ Class Datos extends Conexion{
 			}else{
 				$stock_nuevo = $p["stock"] - $cantidad;
 				if($stock_nuevo<0){
-					$stock_nuevo = 0;
+					return "error";
+				}else{
+					//Se prepara la consulta
+					$stmt2 = Conexion::conectar()->prepare("UPDATE productos SET stock='$stock_nuevo' WHERE id_producto='$id'");
+					//se ejecuta la consulta
+					return $stmt2->execute();
+					$stmt->close();
 				}
 			}
-			//Se prepara la consulta
-			$stmt2 = Conexion::conectar()->prepare("UPDATE productos SET stock='$stock_nuevo' WHERE id_producto='$id'");
-			//se ejecuta la consulta
-			return $stmt2->execute();
 			//Se cierra la consulta
-			$stmt->close();
 			$stmt2->close();
 		}
 	}
