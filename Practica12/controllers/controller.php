@@ -438,12 +438,13 @@ Class MvcController{
 											"ref" => $ref,
 											"cantidad" => $cantidad,
 											"mov" => $movimiento);
-				//Se manda a llamar un modelo que agrega o quita cantidad de productos en stock
-				$respuesta = Datos::agregarOquitarStockModel($datosController);
+
+				//Modelo que actualiza el stock
+				$respuesta = Datos::sumarYrestarStockModel($cantidad, $id, 1);
 				//Si se ejecuta la consulta se actualiza la cantidad del stock en el producto
 				if($respuesta){
-					//Modelo que actualiza el stock
-					$respuesta2 = Datos::sumarYrestarStockModel($cantidad, $id, 1);
+					//Se manda a llamar un modelo que agrega o quita cantidad de productos en stock
+					$respuesta2 = Datos::agregarOquitarStockModel($datosController);
 					//Si se actualiza el stock muestra una alerta y se dirige a los detalles del producto
 					if($respuesta2){
 						echo "<script type='text/javascript'>
@@ -482,14 +483,14 @@ Class MvcController{
 											"ref" => $ref,
 											"cantidad" => $cantidad,
 											"mov" => $movimiento);
-				//Se manda a llamar el modelo que agrega o quita la cantidad de stock
-				$respuesta = Datos::agregarOquitarStockModel($datosController);
+				//Se manda a llamar el modelo que actualiza la cantidad del stock
+				$respuesta = Datos::sumarYrestarStockModel($cantidad, $id, 2);
 				//Si la consulta se lleva a cabo se actualiza el stock
 				if($respuesta){
-					//Se manda a llamar el modelo que actualiza la cantidad del stock
-					$respuesta2 = Datos::sumarYrestarStockModel($cantidad, $id, 2);
+					//Se manda a llamar el modelo que agrega o quita la cantidad de stock
+					$respuesta2 = Datos::agregarOquitarStockModel($datosController);
 					//Si se actualiza el stock muestra una alerta de exito y se dirige a los detalles del producto
-					if($respuesta2 == "error"){
+					if($respuesta == "error"){
 						echo "<script type='text/javascript'>
 	    					alert('No hay unidades suficientes, no se realizó la acción');
 	  				  		</script>";

@@ -210,24 +210,29 @@ Class Datos extends Conexion{
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_producto='$id'");
 		$stmt->execute();
 		$p = $stmt->fetch();
+		$stock_nuevo=0;
+		$resp="";
+		$b=0;
+
 		if($p){
 			if($op==1){
 				$stock_nuevo = $cantidad + $p["stock"];
 			}else{
 				$stock_nuevo = $p["stock"] - $cantidad;
-				if($stock_nuevo<0){
-					return "error";
-				}else{
-					//Se prepara la consulta
-					$stmt2 = Conexion::conectar()->prepare("UPDATE productos SET stock='$stock_nuevo' WHERE id_producto='$id'");
-					//se ejecuta la consulta
-					return $stmt2->execute();
-					$stmt->close();
-				}
 			}
-			//Se cierra la consulta
-			$stmt2->close();
 		}
+
+		if($stock_nuevo < 0){
+			return "error";
+		}else{
+			//Se prepara la consulta
+			$stmt2 = Conexion::conectar()->prepare("UPDATE productos SET stock='$stock_nuevo' WHERE id_producto='$id'");
+			//se ejecuta la consulta
+			$stmt2->execute();
+			return "listo";
+			$stmt2->close();
+		}	
+		$stmt->close();
 	}
 
 	//Modelo que modifica una categoria de la base de datos
