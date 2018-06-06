@@ -251,31 +251,12 @@ Class Datos extends Conexion{
 		//se ejecuta la consulta
 		$r = $stmt->execute();
 		if($r){
-			//Se prepara la consulta
-			$stmt2 = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_categoria='$categoria'");
-			//se ejecuta la consulta
-			$stmt2->execute();
-			//Se devuelven los registros encontrados
-			$r2 = $stmt2->fetchAll();
-			if($r2){
-				foreach ($r2 as $fila) {
-					$p = $fila["id_producto"];
-					//Se prepara la consulta
-					$stmt3 = Conexion::conectar()->prepare("UPDATE historial SET eliminado=1 WHERE id_producto='$p'");
-					//se ejecuta la consulta		
-					$stmt3->execute();
-				}
-				//Se prepara la consulta
-				$stmt4 = Conexion::conectar()->prepare("UPDATE productos SET eliminado=1 WHERE id_categoria='$categoria'");
-				//se ejecuta la consulta
-				return $stmt4->execute();
-			}
+			$stmt4 = Conexion::conectar()->prepare("UPDATE productos SET eliminado=1 WHERE id_categoria='$categoria'");
+			return $stmt4->execute();
 			//Se cierra la consulta
-			$stmt2->close();
-			$stmt3->close();
 			$stmt4->close();
-			$stmt->close();
 		}
+		$stmt->close();
 	}
 
 	//Modelo que modifica un usuario de la base de datos
