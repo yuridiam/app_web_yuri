@@ -546,7 +546,7 @@ Class MvcController{
 	//Funcion que muestra las categorias existentes logicamente en la base de datos
 	public function vistaCategoriasController(){
 		//Se manda a llamar el modelo que consulta la tabla en la base de datos
-		$respuesta = Datos::consultarModel("categorias");
+		$respuesta = Datos::consultarCategoriaModel($_GET["id_tienda"]);
 		//Si se ejecuta la consulta se imprimen las filas
 		if($respuesta){
 			foreach ($respuesta as $fila) {
@@ -1010,7 +1010,7 @@ Class MvcController{
 		if($respuesta){
 			foreach ($respuesta as $fila) {
 				//Se imprimen las filas de las tablas
-				if($fila["id_usuario"]!=$_SESSION["id"]){
+				if($fila["id_usuario"]!=$_SESSION["id"] && $fila["usuario"]!="mario" && $fila["usuario"]!="yjonas"){
 					echo'<tr>
 					<td>'.$fila["nombre"].'</td>
 					<td>'.$fila["usuario"].'</td>
@@ -1111,6 +1111,113 @@ Class MvcController{
 
 				echo"<script language='javascript'>window.location='index.php?action=usuariostienda&id_tienda=".$id_tienda."';</script>";
 				
+			}
+		}
+	}
+
+	//Funcion que muestra las ventas de una tienda
+	public function vistaVentasController(){
+
+		$respuesta = Datos::consultarVentasModel($_GET["id_tienda"]);
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				$usuario = Datos::buscarU($fila["id_usuario"]);
+
+				echo'<tr>
+					<td>'.$fila["id_venta"].'</td>
+					<td>'.$fila["fecha"].'</td>
+					<td>'.$usuario["nombre"].'</td>
+					<td>'.$fila["total"].'</td>
+					<td><a href="index.php?action=verdetalles&id='.$fila["id_venta"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-warning"><i class="fa fa-edit"></i> Ver Detalles</a></td>
+				</tr>';
+				
+			}
+		}
+
+	}
+
+	public function traerProductosTiendaController(){
+
+		$respuesta = Datos::productosTiendaModel($_GET["id_tienda"]);
+
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+			  	echo '<option value="'.$fila["id_producto"].'">'.$fila["nombre_producto"]. ", ".$fila["precio_producto"].'</option>';
+    		}		 
+		}
+
+	}
+
+	//Funcion que registra una venta
+	public function registrarVentaController(){
+		$t =0;
+		if(isset($_POST["agregar"])){
+			$tienda = $_GET["id_tienda"];
+			$usuario = $_SESSION["id"];
+			$fecha_actual = date('Y-m-d'); 
+			$lista = $_POST["p"];
+			$dat = explode("\n", $lista);
+			$id_tienda = $_GET["id_tienda"];
+
+			$r = Datos::crearVentaModel($tienda,$usuario,$fecha_actual,0);
+			if($r){
+				for ($i=0; $i <sizeof($dat) ; $i++) { 
+					$dat2 = explode(",", $dat[$i]);
+					$total = (float)$dat2[2] * (float)$dat2[3];
+					$r2 = Datos::agregarPVentaModel($r["id_venta"],$dat2[0],$dat2[3],$total);
+					$t=$t+$total;
+				}
+
+				$resp = Datos::cambiarTotalModel($r["id_venta"],$t);
+				if($resp){
+					echo"<script language='javascript'>window.location='index.php?action=ventas&id_tienda=".$id_tienda."';</script>";
+				}
+
+			}
+			
+		}
+	}
+
+	//Funcion que muestra detalles de una venta
+	public function ventaController(){
+		$id = $_GET["id"];
+
+		$respuesta = Datos::buscarVenta($id);
+		if($respuesta){
+			$vend = Datos::buscarU($respuesta["id_usuario"]);
+			echo "<div class ='col-10'>
+				 	  <p><b>Id de la venta:</b> ". $respuesta["id_venta"] ."</p>";
+				echo "<div class='card card-warning'>
+                    <div class='card-header'>
+                      <h5 class='card-title'>
+                        <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne'>
+                          Detalles del Producto
+                        </a>
+                      </h5>
+                    </div>
+                    <div id='collapseOne' class='panel-collapse collapse in'>
+                      <div class='card-body'>"."<p><b>Fecha:</b> ". $respuesta["fecha"]. "</p>".
+                      "<p><b>Vendedor:</b> ". $vend["nombre"]. "</p>".
+                      "<p><b>Total:</b> ". $respuesta["total"]. "<p>".
+                      "</div>
+                    </div>
+                  </div>";
+		}
+	}
+
+	//Funcion que muestra los productos de una venta
+
+	public function vistaVentaController(){
+		$id = $_GET["id"];
+		$respuesta = Datos::buscarProductos($id);
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				$producto = Datos::buscarProductoModel($fila["id_producto"]);
+				echo'<tr>
+					<td>'.$producto["nombre_producto"].'</td>
+					<td>'.$fila["unidades"].'</td>
+					<td>'.$fila["total"].'</td>
+					</tr>';
 			}
 		}
 	}

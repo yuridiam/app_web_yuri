@@ -447,4 +447,56 @@
         });
       }
     }
+    var cont = 0;
+    var lista="";
+    var lista2="";
+
+    function agP(){
+      var titulo = document.getElementById("tit");
+      var produs = document.getElementById("prod");
+      var can = document.getElementById("cant").value;
+      var pr = document.getElementById("p");
+      if(cont==0){
+        if(can != ''){
+           titulo.innerHTML="Lista de compra";
+           var id = $("#productos").val();
+           var nombre = $("#productos option:selected").html();
+           lista = lista + id + " , " + nombre + " , " + can + "<br/>";
+           lista2 = lista2 + id + " , " + nombre + " , " + can;
+           pr.value=lista2;
+           cont++;
+        }else{
+          swal("Error", "Ingrese una cantidad", "error");
+          event.preventDefault();
+        }
+
+      }else{
+        if(can != ''){
+          var id = $("#productos").val();
+          var nombre = $("#productos option:selected").html();
+          lista = lista + id + " , " + nombre + " , " + can + "<br/>";
+          lista2 = lista2 + id + " , " + nombre + " , " + can;
+          pr.value=lista2;
+          cont++;
+        }else{
+          swal("Error", "Ingrese una cantidad", "error");
+          event.preventDefault();
+        }
+      }
+      produs.innerHTML=lista;
+    }
+
+    function regiP(){
+      event.preventDefault();
+     
+      swal({
+      title: "<h5 style='color: gray'>Confirme la venta</h5>",
+      text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-success' value='Aceptar' id='aceptar' onclick='verificarS();'>",
+      html: true,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+      
+    }
+
 </script>

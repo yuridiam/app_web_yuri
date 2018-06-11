@@ -411,6 +411,88 @@ Class Datos extends Conexion{
 
 	}
 
+	//Modelo que consulta los datos de una tabla
+	public function consultarVentasModel($idventa){
+
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM venta WHERE id_venta='$idventa'");
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->fetchAll();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que consulta los datos de una tabla
+	public function productosTiendaModel($idtienda){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_tienda='$idtienda' AND eliminado=0");
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->fetchAll();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+	//Modelo que inserta los datos de una tabla
+	public function crearVentaModel($tienda,$usuario,$fecha_actual,$t){
+		$stmt = Conexion::conectar()->prepare("INSERT INTO venta (id_tienda,id_usuario,fecha,total) VALUES('$tienda','$usuario','$fecha_actual','$t')");
+		//se retorna el resultado de la consulta
+		$stmt->execute();
+		$stmt2 = Conexion::conectar()->prepare("SELECT * FROM venta ORDER BY id_venta DESC LIMIT 1");
+		//se ejecuta la consulta
+		$stmt2->execute();
+		return $stmt2->fetch();
+		//se cierra la consulta
+		$stmt->close();
+		$stmt2->close();
+	}
+
+	//Modelo que inserta los datos de una tabla
+	public function agregarPVentaModel($idventa,$idprodu,$uni,$total){
+		$stmt = Conexion::conectar()->prepare("INSERT INTO venta_productos (id_venta,id_producto,unidades,total) VALUES('$idventa','$idprodu','$uni','$total')");
+		print_r($stmt);
+		return $stmt->execute();
+		$stmt->close();
+
+	}
+
+	//Modelo que actualiza los datos de una tabla
+	public function cambiarTotalModel($idventa,$total){
+		$stmt = Conexion::conectar()->prepare("UPDATE venta SET total='$total' WHERE id_venta='$idventa'");
+		return $stmt->execute();
+		$stmt->close();
+	}
+
+	//Modelo que consulta los datos de una tabla
+	public function buscarVenta($id){
+		$stmt2 = Conexion::conectar()->prepare("SELECT * FROM venta WHERE id_venta='$id'");
+		//se ejecuta la consulta
+		$stmt2->execute();
+		return $stmt2->fetch();
+
+	}
+
+	//Modelo que busca los datos de una tabla
+	public function buscarProductos($idventa){
+		$stmt2 = Conexion::conectar()->prepare("SELECT * FROM venta_productos WHERE id_venta='$idventa'");
+		//se ejecuta la consulta
+		$stmt2->execute();
+		return $stmt2->fetchAll();
+
+	}
+
+	//Modelo que consulta los datos de una tabla
+	public function consultarCategoriaModel($id){
+		$stmt2 = Conexion::conectar()->prepare("SELECT * FROM categorias WHERE id_tienda='$id' AND eliminado=0");
+		//se ejecuta la consulta
+		$stmt2->execute();
+		return $stmt2->fetchAll();
+
+	}
+
+
 	
 }
 

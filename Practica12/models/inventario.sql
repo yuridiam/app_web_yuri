@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-06-2018 a las 11:18:38
+-- Tiempo de generación: 11-06-2018 a las 17:18:53
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -79,8 +79,7 @@ INSERT INTO `historial` (`id_historial`, `id_producto`, `id_usuario`, `fecha`, `
 (11, 1, 9, '2018-06-11', '09:19:40', '', '9340', 20, 'Se quitÃ³ del stock', 0, 2),
 (12, 1, 9, '2018-06-11', '09:20:54', '', '04993', 10, 'Se quitÃ³ del stock', 0, 2),
 (13, 1, 9, '2018-06-11', '09:21:08', '', '0939', 100, 'Se agregÃ³ al stock', 0, 2),
-(14, 1, 7, '2018-06-11', '09:22:24', '', '39890', 10, 'Se agregÃ³ al stock', 0, 2),
-(15, 3, 9, '2018-06-11', '09:25:22', '', '09382', 100, 'Se agregÃ³ al stock', 0, 4);
+(14, 1, 7, '2018-06-11', '09:22:24', '', '39890', 10, 'Se agregÃ³ al stock', 0, 2);
 
 -- --------------------------------------------------------
 
@@ -130,7 +129,7 @@ CREATE TABLE `tienda` (
 INSERT INTO `tienda` (`id_tienda`, `nombre`, `direccion`, `desactivado`) VALUES
 (1, 'default', 'default', 0),
 (2, 'Wallmart', 'En todo el mundo', 0),
-(4, 'granD', 'todo tamaulipas', 1);
+(4, 'granD', 'todo tamaulipas', 0);
 
 -- --------------------------------------------------------
 
@@ -156,7 +155,49 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `usuario`, `pass`, `eliminado`, `fecha_registro`, `id_tienda`, `tipo`) VALUES
 (6, 'Yuridia Montelongo', 'yjonas', '123', 0, '2018-06-03', 1, 1),
 (7, 'Dulce Montelongo', 'dulce123', 'dulce12', 0, '2018-06-03', 2, 2),
-(9, 'Mario Rodriguez', 'mario', 'mario123', 0, '2018-06-03', 1, 1);
+(9, 'Mario Rodriguez', 'mario', 'mario123', 0, '2018-06-03', 1, 1),
+(10, 'Yuridia', 'yuri', 'yuri', 0, '2018-06-11', 4, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta`
+--
+
+CREATE TABLE `venta` (
+  `id_venta` int(11) NOT NULL,
+  `id_tienda` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha` varchar(10) NOT NULL,
+  `total` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`id_venta`, `id_tienda`, `id_usuario`, `fecha`, `total`) VALUES
+(8, 2, 9, '2018-06-11', 400);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta_productos`
+--
+
+CREATE TABLE `venta_productos` (
+  `id_venta` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `unidades` int(11) NOT NULL,
+  `total` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `venta_productos`
+--
+
+INSERT INTO `venta_productos` (`id_venta`, `id_producto`, `unidades`, `total`) VALUES
+(8, 1, 4, '400');
 
 --
 -- Índices para tablas volcadas
@@ -200,6 +241,21 @@ ALTER TABLE `usuarios`
   ADD KEY `id_tienda` (`id_tienda`);
 
 --
+-- Indices de la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD PRIMARY KEY (`id_venta`),
+  ADD KEY `id_tienda` (`id_tienda`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `venta_productos`
+--
+ALTER TABLE `venta_productos`
+  ADD KEY `id_venta` (`id_venta`),
+  ADD KEY `id_producto` (`id_producto`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -231,7 +287,13 @@ ALTER TABLE `tienda`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `venta`
+--
+ALTER TABLE `venta`
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
@@ -263,6 +325,20 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`);
+
+--
+-- Filtros para la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`),
+  ADD CONSTRAINT `venta_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `venta_productos`
+--
+ALTER TABLE `venta_productos`
+  ADD CONSTRAINT `venta_productos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`),
+  ADD CONSTRAINT `venta_productos_ibfk_2` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
