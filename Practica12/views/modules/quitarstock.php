@@ -13,19 +13,20 @@
                   <div class="btn-group">
                     <?php 
                         //Se usa la variable id
-                        echo '<a href="index.php?action=stock&id='. $id . '"><button type="button" class="btn btn-tool">
-                              <i class="fa fa-times"></i>
-                              </button></a>';
+                        echo '<a href="index.php?action=stock&id='. $id . '&id_tienda='.$_GET["id_tienda"].'"><button type="button" class="btn btn-tool">
+                    <i class="fa fa-times"></i>
+                    </button></a>';
                     ?>
                   </div>
             </div>
             </div>
             <div class="card-body">
             	<form method="post">
-            		<input type="number" class="form-control" name="cantidad" placeholder="Cantidad a eliminar" required>
-                <input type="text" class="form-control" name="ref" placeholder="Referencia" required>
+            		<input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad a eliminar">
+                <input type="text" class="form-control" name="ref" id="ref" placeholder="Referencia">
                 <textarea class="form-control" name="nota" placeholder="Nota"></textarea><br>
-                <button type="submit" class="btn btn-block btn-outline-danger" name="agregar">Quitar</button>
+                <?php echo "<input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>"; ?>
+                <button type="submit" class="btn btn-block btn-outline-danger" id="agregar" name="agregar" onclick="quitarS();">Quitar</button>
             	</form>
             </div>
         </div>

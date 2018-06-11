@@ -1,24 +1,15 @@
-<script type="text/javascript">
-  //Funcion que trae las variables de la url
-	function getUrlVars() {
-      var vars = {};
-      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-          vars[key] = value;
-      });
-      return vars;
-    }
-    //Se obtienen las variables
-    var id = getUrlVars();
-    var borrar = ""+id["idBorrar"];
-    var pass = prompt("Ingrese su contraseña");
-    var contra = ""+pass;
-    //Se comprueba loq ue se ingreso en el prompt
-    if(contra!="" && contra!=undefined && contra!="null"){
-      //Se dirige a la pagina con las nuevas variables
-    	document.location.href="index.php?action=categorias"+"&id="+borrar+"&contra="+contra;
-    }else{
-      //Se dirige a la vista con un alert de error
-    	document.location.href="index.php?action=categorias";
-    	alert("No ingreso ninguna contraseña");
-    }
-</script>
+<div class="modal modal-danger fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <?php echo '<a href="index.php?action=categorias&id_tienda='.$_GET["id_tienda"].'"><button type="button" class="close">';?>
+          <span aria-hidden="true">&times;</span></button></a><br>
+          <h5 align="center" style="font-weight: bold; color: gray">¿Está seguro que quiere eliminar esta categoría?</h5>
+          <input type="password" name="contra" id="contra" placeholder="Ingrese su contraseña" required>
+          <button type="button" class="btn btn-block btn-outline-danger" name="aceptar" onclick="eliminarCat();">Aceptar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

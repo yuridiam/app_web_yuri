@@ -2,19 +2,19 @@
       <div class="container-fluid">
 <div class="card card-primary card-outline">
             <div class="card-header">
-              <h3 class="card-title">Modificar Categoría</h3>
+              <h3 class="card-title">Modificar Usuario</h3>
               <div class="card-tools">
                   <div class="btn-group">
-                    <?php echo "<a href='index.php?action=categorias&id_tienda=".$_GET["id_tienda"]."'><button type='button' class='btn btn-tool'><i class='fa fa-times'></i></button></a>";?>
+                     <?php echo "<a href='index.php?action=usuariostienda&id_tienda=".$_GET["id_tienda"]."'><button type='button' class='btn btn-tool'><i class='fa fa-times'></i></button></a>";?>
                   </div>
             </div>
             </div>
             <div class="card-body">
-            	<form method="post">
+            	<form method="post" id="modificar" name="modificar">
                 <?php
                       //Creacion del objeto y llamado a sus metodos
-            		      $editarCat = new MvcController();
-                      $editarCat->editarCategoriaController();
+            		      $editarUsu = new MvcController();
+                      $editarUsu->editarUsuarioTiendaController();
                 ?>
             	</form>
             </div>
@@ -24,7 +24,7 @@
 
 <?php
   //Creacion del objeto y llamado a sus metodos
-  $modificarCat = new MvcController();
-  $modificarCat->modificarCategoriaController();
+  $modificarUsu = new MvcController();
+  $modificarUsu->modificarUsuarioTiendaController();
 
 ?>

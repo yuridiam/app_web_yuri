@@ -6,7 +6,9 @@
                 <h3 class="card-title"> Actualizar Stock </h3>
                 <div class="card-tools">
                   <div class="btn-group">
-                    <a href="index.php?action=inventario"><button type="button" class="btn btn-tool">
+                    <?php 
+                        echo '<a href="index.php?action=inventario&id_tienda='.$_GET["id_tienda"].'"><button type="button" class="btn btn-tool">';
+                    ?>
                     <i class="fa fa-times"></i></button></a>
                   </div>
             </div>
@@ -20,6 +22,7 @@
 				?>
 				<div class="col-12">
 				<br><h3><b>Movimientos</b></h3><hr style="width: 95%">
+        <div class="table-responsive">
 				<table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -40,6 +43,7 @@
                     ?>
                 </tbody>
               </table>
+            </div>
               </div>
           </div>
       </section>

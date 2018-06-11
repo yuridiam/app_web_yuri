@@ -2,33 +2,30 @@
       <div class="container-fluid">
 <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Inventario</h3>
+              <h3 class="card-title">Usuarios</h3>
             </div>
             <!-- /.card-header -->
             <br>
-            <?php echo "<a href='index.php?action=registrarproducto&id_tienda=".$_GET["id_tienda"]."'><input type='button' name='agregar' class='btn btn-block btn-success' style='width: 15%; margin-left: 845px' value='Agregar Producto'></a>"; ?>
+            <?php echo "<a href='index.php?action=registrarusuariotienda&id_tienda=".$_GET["id_tienda"]."'><input type='button' name='agregar' class='btn btn-block btn-success' style='width: 15%; margin-left: 845px' value='Agregar Usuario'></a>" ?>
             <div class="card-body">
               <div class="table-responsive">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Código</th>
                   <th>Nombre</th>
-                  <th>Precio</th>
-                  <th>Stock actual</th>
-                  <th>Categoria</th>
+                  <th>Usuario</th>
+                  <th>Contraseña</th>
                   <th>Fecha de Registro</th>
-                  <th></th>
                   <th></th>
                   <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                    <?php
+                  <?php
                       //Creacion del objeto y llamado de sus objetos
-                      $visualizarPro = new MvcController();
-                      $visualizarPro->vistaInventarioController();
-                    ?>
+                      $vistaU = new MvcController();
+                      $vistaU->vistaUsuarioTiendaController();
+                  ?>
                 </tbody>
               </table>
             </div>
@@ -44,9 +41,8 @@
     <!-- /.content -->
   </div>
 
-<?php
-  //Creacion del objeto y llamado de sus objetos
-  $eliminarPro = new MvcController();
-  $eliminarPro->eliminarProductoController();
-
-?>
+  <?php
+      //Creacion del objeto y llamado de sus objetos
+      $eliminarU = new MvcController();
+      $eliminarU->eliminarUsuarioTiendaController();
+  ?>

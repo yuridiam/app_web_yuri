@@ -27,8 +27,9 @@ Class Datos extends Conexion{
 		$nom = $datosModel["nombre"];
 		$desc = $datosModel["desc"];
 		$fecha = $datosModel["fecha"];
+		$tienda = $datosModel["tienda"];
 		//se ejecuta la consulta
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre_categoria,descripcion_categoria,fecha_registro) VALUES('$nom','$desc','$fecha')");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre_categoria,descripcion_categoria,fecha_registro,id_tienda) VALUES('$nom','$desc','$fecha','$tienda')");
 		//se retorna el resultado de la consulta
 		return $stmt->execute();
 		//se cierra la consulta
@@ -42,8 +43,10 @@ Class Datos extends Conexion{
 		$usuario = $datosModel["usuario"];
 		$contra = $datosModel["contra"];
 		$fecha = $datosModel["fecha"];
+		$tienda = $datosModel["tienda"];
+		$tipo = $datosModel["tipo"];
 		//se ejecuta la consulta
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre,usuario,pass,fecha_registro) VALUES('$nom','$usuario','$contra','$fecha')");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre,usuario,pass,fecha_registro,id_tienda,tipo) VALUES('$nom','$usuario','$contra','$fecha','$tienda','$tipo')");
 		//se retorna el resultado de la consulta
 		return $stmt->execute();
 		//se cierra la consulta
@@ -57,9 +60,26 @@ Class Datos extends Conexion{
 		if($tabla != "historial"){
 			//se prepara la consulta
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0");
+			if($tabla == "tienda"){
+				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE desactivado=0");
+			}else{
+				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0");
+			}
 		}else{
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0 ORDER BY id_historial DESC LIMIT 10");
 		}
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->fetchAll();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que busca todas las tiendas en la base de datos
+	public function todasTiendasModel(){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM tienda");
 		//se ejecuta la consulta
 		$stmt->execute();
 		//se retornan todas las filas devueltas
@@ -89,6 +109,7 @@ Class Datos extends Conexion{
 	//Modelo que agrega un producto a la base de datos
 	public function agregarProductoModel($tabla, $datosModel){
 		//se almacenan los datos en variables
+		$id = $datosModel["tienda"];
 		$cod = $datosModel["codigo"];
 		$nom = $datosModel["nombre"];
 		$precio = $datosModel["precio"];
@@ -96,7 +117,7 @@ Class Datos extends Conexion{
 		$cat = $datosModel["cat"];
 		$fecha = $datosModel["fecha"];
 		//se ejecuta la consulta
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (codigo_producto,nombre_producto,precio_producto,stock,id_categoria,fecha_registro) VALUES('$cod','$nom','$precio','$stock','$cat','$fecha')");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (codigo_producto,nombre_producto,precio_producto,stock,id_categoria,fecha_registro,id_tienda) VALUES('$cod','$nom','$precio','$stock','$cat','$fecha','$id')");
 		//se retorna el resultado de la consulta
 		return $stmt->execute();
 		//se cierra la consulta
@@ -196,8 +217,9 @@ Class Datos extends Conexion{
 		$ref = $datosModel["ref"];
 		$cant = $datosModel["cantidad"];
 		$mov = $datosModel["mov"];
+		$tienda = $datosModel["tienda"];
 		//Se prepara la consulta
-		$stmt = Conexion::conectar()->prepare("INSERT INTO historial (id_producto,id_usuario,fecha,hora,nota,referencia,cantidad,movimiento) VALUES('$producto','$usuario','$fecha','$hora','$nota','$ref','$cant','$mov')");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO historial (id_producto,id_usuario,fecha,hora,nota,referencia,cantidad,movimiento,id_tienda) VALUES('$producto','$usuario','$fecha','$hora','$nota','$ref','$cant','$mov','$tienda')");
 		//se ejecuta la consulta
 		return $stmt->execute();
 		//Se cierra la consulta
@@ -271,8 +293,9 @@ Class Datos extends Conexion{
 		$nombre = $datosModel["nombre"];
 		$usuario = $datosModel["usuario"];
 		$contra = $datosModel["contra"];
+		$tienda = $datosModel["tienda"];
 		//Se prepara la consulta
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre='$nombre', usuario='$usuario', pass='$contra' WHERE id_usuario='$id'");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre='$nombre', usuario='$usuario', pass='$contra', id_tienda='$tienda' WHERE id_usuario='$id'");
 		//se ejecuta la consulta
 		return $stmt->execute();
 		//Se cierra la consulta
@@ -281,12 +304,111 @@ Class Datos extends Conexion{
 
 	//Modelo que elimina un usuario de la base de datos
 	public function eliminarUsuarioModel($usuario){
+
+		$prev = Conexion::conectar()->prepare("SELECT * FROM usuarios WHERE id_usuario='$usuario'");
+		$prev->execute();
+		$u = $prev->fetch();
+		$id_t = $u["id_tienda"];
+		$prev2 = Conexion::conectar()->prepare("SELECT * FROM tienda WHERE id_tienda='$id_t'");
+		$prev2->execute();
+		$ti = $prev2->fetch();
+
+		if($ti["nombre"]!="default"){
+			//Se prepara la consulta
+			$stmt = Conexion::conectar()->prepare("UPDATE usuarios SET eliminado=1 WHERE id_usuario='$usuario'");
+			//se ejecuta la consulta
+			return $stmt->execute();
+			//Se cierra la consulta
+			$stmt->close();
+		}
+	}
+
+	public function buscarTiendaModel($id){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM tienda WHERE id_tienda='$id'");
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+
+	//Modelo que agrega un usuario a la base de datos
+	public function agregarTiendaModel($tabla, $datosModel){
+		//se almacenan los datos en variables
+		$nom = $datosModel["nombre"];
+		$dir = $datosModel["direccion"];
+		//se ejecuta la consulta
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre,direccion) VALUES('$nom','$dir')");
+		//se retorna el resultado de la consulta
+		return $stmt->execute();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que modifica un usuario de la base de datos
+	public function modificarTiendaModel($tabla, $datosModel){
+		//Se almacenan las variables
+		$id = $datosModel["id"];
+		$nombre = $datosModel["nombre"];
+		$dir = $datosModel["direccion"];
 		//Se prepara la consulta
-		$stmt = Conexion::conectar()->prepare("UPDATE usuarios SET eliminado=1 WHERE id_usuario='$usuario'");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre='$nombre', direccion='$dir' WHERE id_tienda='$id'");
 		//se ejecuta la consulta
 		return $stmt->execute();
 		//Se cierra la consulta
 		$stmt->close();
+	}
+
+	public function opTiendaModel($id){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM tienda WHERE id_tienda='$id'");
+		$stmt->execute();
+		$tienda = $stmt->fetch();
+
+		if($tienda["desactivado"]==1){
+			$stmt2 = Conexion::conectar()->prepare("UPDATE tienda SET desactivado=0 WHERE id_tienda='$id'");
+			return $stmt2->execute();
+			$stmt2->close();
+			$stmt->close();
+		}else{
+			$stmt2 = Conexion::conectar()->prepare("UPDATE tienda SET desactivado=1 WHERE id_tienda='$id'");
+			return $stmt2->execute();
+			$stmt2->close();
+			$stmt->close();
+		}
+	}
+
+	//Modelo que cuenta los registros de diferentes tablas
+	public function totalesTiendaModel($tabla, $id){
+		//se prepara la consulta
+		if($tabla!="historial"){
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0 AND id_tienda = '$id'");
+		}else{
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_tienda = '$id'");
+		}
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->rowCount();
+		//se cierra la consulta
+		$stmt->close();
+
+	}
+
+	//Modelo que consulta los datos de diferentes tablas que utiliza el controler
+	public function consultarTiendaModel($tabla, $id){
+
+		if($tabla != "historial"){
+			//se prepara la consulta
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0 AND id_tienda='$id'");
+		}else{
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE eliminado=0 AND id_tienda='$id' ORDER BY id_historial DESC LIMIT 10");
+		}
+		//se ejecuta la consulta
+		$stmt->execute();
+		//se retornan todas las filas devueltas
+		return $stmt->fetchAll();
+		//se cierra la consulta
+		$stmt->close();
+
 	}
 
 	

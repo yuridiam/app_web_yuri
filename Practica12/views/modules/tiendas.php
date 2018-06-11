@@ -2,33 +2,29 @@
       <div class="container-fluid">
 <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Inventario</h3>
+              <h3 class="card-title">Tiendas</h3>
             </div>
             <!-- /.card-header -->
             <br>
-            <?php echo "<a href='index.php?action=registrarproducto&id_tienda=".$_GET["id_tienda"]."'><input type='button' name='agregar' class='btn btn-block btn-success' style='width: 15%; margin-left: 845px' value='Agregar Producto'></a>"; ?>
+            <a href="index.php?action=registrartienda"><input type="button" name="agregar" class="btn btn-block btn-success" style="width: 15%; margin-left: 845px" value="Agregar Tienda"></a>
             <div class="card-body">
               <div class="table-responsive">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Código</th>
                   <th>Nombre</th>
-                  <th>Precio</th>
-                  <th>Stock actual</th>
-                  <th>Categoria</th>
-                  <th>Fecha de Registro</th>
+                  <th>Dirección</th>
                   <th></th>
                   <th></th>
                   <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                    <?php
+                  <?php
                       //Creacion del objeto y llamado de sus objetos
-                      $visualizarPro = new MvcController();
-                      $visualizarPro->vistaInventarioController();
-                    ?>
+                      $vistaU = new MvcController();
+                      $vistaU->vistaTiendaController();
+                  ?>
                 </tbody>
               </table>
             </div>
@@ -45,8 +41,7 @@
   </div>
 
 <?php
-  //Creacion del objeto y llamado de sus objetos
-  $eliminarPro = new MvcController();
-  $eliminarPro->eliminarProductoController();
-
-?>
+      //Creacion del objeto y llamado de sus objetos
+      $desActTienda = new MvcController();
+      $desActTienda->desActTiendaController();
+  ?>

@@ -13,7 +13,7 @@
        <div class="btn-group">
           <?php 
             //Se incluye la variable id en una url
-              echo '<a href="index.php?action=stock&id='. $id . '"><button type="button" class="btn btn-tool">
+              echo '<a href="index.php?action=stock&id='. $id . '&id_tienda='.$_GET["id_tienda"].'"><button type="button" class="btn btn-tool">
                     <i class="fa fa-times"></i>
                     </button></a>';
           ?>
@@ -22,10 +22,11 @@
             </div>
             <div class="card-body">
             	<form method="post">
-            		<input type="number" class="form-control" name="cantidad" placeholder="Cantidad a agregar" required>
-                <input type="text" class="form-control" name="ref" placeholder="Referencia" required>
+            		<input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad a agregar">
+                <input type="text" class="form-control" name="ref" id="ref" placeholder="Referencia">
                 <textarea class="form-control" name="nota" placeholder="Nota"></textarea><br>
-                <button type="submit" class="btn btn-block btn-outline-success" name="agregar">Agregar</button>
+                <?php echo "<input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>"; ?>
+                <button type="submit" class="btn btn-block btn-outline-success" name="agregar" id="agregar" onclick="agregarS();">Agregar</button>
             	</form>
             </div>
         </div>

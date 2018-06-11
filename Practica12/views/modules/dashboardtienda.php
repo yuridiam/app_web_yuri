@@ -1,3 +1,11 @@
+<?php 
+
+  if(isset($_GET["id_tienda"])){
+    $idtienda = $_GET["id_tienda"];
+  }
+  
+
+?>
 <div class="content-wrapper" style="background-color: white"> 
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
@@ -9,7 +17,7 @@
                 <h3><?php
                     //Creacion del objeto y llamado a sus metodos
                     $p = new MvcController();
-                    $p->contarProductosController();
+                    $p->contarProductosTiendaController();
                 ?></h3>
                 <p>Total de productos</p>
               </div>
@@ -26,7 +34,7 @@
                 <h3><?php
                     //Creacion del objeto y llamado a sus metodos
                     $c = new MvcController();
-                    $c->contarCategoriasController();
+                    $c->contarCategoriasTiendaController();
                 ?><sup style="font-size: 20px"></sup></h3>
 
                 <p>Total de Categorías</p>
@@ -44,7 +52,7 @@
                 <h3><?php
                   //Creacion del objeto y llamado a sus metodos
                     $u = new MvcController();
-                    $u->contarUsuariosController();
+                    $u->contarUsuariosTiendaController();
                 ?></h3>
                 <p>Total de Usuarios</p>
               </div>
@@ -61,7 +69,7 @@
                 <h3><?php
                     //Creacion del objeto y llamado a sus metodos
                     $m = new MvcController();
-                    $m->contarMovimientosController();
+                    $m->contarMovimientosTiendaController();
                 ?></h3>
 
                 <p>Total de Movimientos</p>
@@ -93,14 +101,13 @@
                       <th>Referencia</th>
                       <th>Cantidad</th>
                       <th>Movimiento</th>
-                      <th>Tienda</th>
                     </tr>
                     </thead>
                     <tbody>
                       <?php 
                           //Creacion del objeto y llamado a sus metodos
                           $uM = new MvcController();
-                          $uM->ultimosMovimientosGlobalController();
+                          $uM->ultimosMovimientosController();
                       ?>
                     </tbody>
                   </table>

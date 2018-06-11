@@ -34,16 +34,17 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="views/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="views/plugins/select2/select2.min.css">
+    <link rel="stylesheet" href="views/dist/sweetalert.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   </head>
   <body class="hold-transition sidebar-mini">
       <?php
         //se validan los tipos de action que hay ya que existen dos menus de navegacion diferentes
-        if(isset($_GET["action"])){
-          if($_GET["action"]=="dashboard" || $_GET["action"]=="inventario" || $_GET["action"]=="usuarios" || $_GET["action"]=="categorias" || $_GET["action"]=="registrarproducto" || $_GET["action"]=="registrarcategoria" || $_GET["action"]=="registrarusuario" || $_GET["action"]=="editarproducto" || $_GET["action"]=="stock" || $_GET["action"]=="agregarstock" || $_GET["action"]=="quitarstock" || $_GET["action"]=="editarcategoria" || $_GET["action"]=="editarusuario"){
+        if(isset($_GET["action"]) && $_GET["action"]!="salir" && $_GET["action"]!="nodisponible" && $_GET["action"]!="error"){
+          /*if($_GET["action"]=="dashboard" || $_GET["action"]=="inventario" || $_GET["action"]=="usuarios" || $_GET["action"]=="categorias" || $_GET["action"]=="registrarproducto" || $_GET["action"]=="registrarcategoria" || $_GET["action"]=="registrarusuario" || $_GET["action"]=="editarproducto" || $_GET["action"]=="stock" || $_GET["action"]=="agregarstock" || $_GET["action"]=="quitarstock" || $_GET["action"]=="editarcategoria" || $_GET["action"]=="editarusuario"){*/
               include("modules/navegacion.php");
-          }
+          /*}*/
         }
       ?>
       <br>
@@ -112,4 +113,338 @@
     //Initialize Select2 Elements
     $('.select2').select2()
   })
+</script>
+<script type="text/javascript">
+  $('#myModal').modal()                      // initialized with defaults
+  $('#myModal').modal({ keyboard: false })   // initialized with no keyboard
+  $('#myModal').modal('show')    
+</script>
+<script src="views/dist/sweetalert.js"></script>
+<script src="views/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+  //Funcion que trae las variables de la url
+  function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+          vars[key] = value;
+      });
+      return vars;
+    }
+
+    function eliminar(){
+      //Se obtienen las variables
+      var c = document.getElementById("contra").value;
+      var id = getUrlVars();
+      var borrar = ""+id["idBorrar"];
+      document.location.href="index.php?action=usuarios"+"&id="+borrar+"&contra="+c;
+    }
+
+    function eliminarPro(){
+      //Se obtienen las variables
+      var c = document.getElementById("contra").value;
+      var id = getUrlVars();
+      var borrar = ""+id["idBorrar"];
+      var id_tienda = ""+id["id_tienda"];
+      document.location.href="index.php?action=inventario"+"&id="+borrar+"&contra="+c+"&id_tienda="+id_tienda;
+    }
+
+    function eliminarUTienda(){
+      //Se obtienen las variables
+      var c = document.getElementById("contra").value;
+      var id = getUrlVars();
+      var borrar = ""+id["idBorrar"];
+      var id_tienda = ""+id["id_tienda"];
+      document.location.href="index.php?action=usuariostienda"+"&id="+borrar+"&contra="+c+"&id_tienda="+id_tienda;
+    }
+
+    function eliminarCat(){
+      //Se obtienen las variables
+      var c = document.getElementById("contra").value;
+      var id = getUrlVars();
+      var borrar = ""+id["idBorrar"];
+      var id_tienda = ""+id["id_tienda"];
+      document.location.href="index.php?action=categorias"+"&id="+borrar+"&contra="+c+"&id_tienda="+id_tienda;
+    }
+
+    function modi(){
+
+      var n = document.getElementById("nombre").value;
+      var u = document.getElementById("usuario").value;
+      var c = document.getElementById("contra").value;
+
+      event.preventDefault();
+     
+      if(n==='' || u==='' || c===''){
+          swal("Error", "Llene todos los campos", "error");
+      }else{
+          swal({
+          title: "<h5 style='color: gray'>¿Seguro que quiere modificar este usuario?</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificar();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+    }
+    function verificar(){
+      var contra = document.getElementById("contra_conf").value;
+
+      if(contra=="mario123" || contra=="123"){
+        $("#agregar").click();
+        swal("Listo", "Registro modificado", "success");
+      }else{
+        swal({
+          title: "<h6 style='color: gray'>Contraseña incorrecta</h6>",
+          html: true,
+
+        });
+      }
+
+    }
+    function aUsuario(){
+      var n = document.getElementById("nombre").value;
+      var u = document.getElementById("usuario").value;
+      var c = document.getElementById("contra").value;
+     
+      if(n==='' || u==='' || c===''){
+        swal("Error", "Llene todos los campos", "error");
+        event.preventDefault();
+      }else{
+        swal("Listo", "Usuario registrado", "success");
+        $("#agregar").click();
+      }
+    }
+
+    function regUT(){
+      var n = document.getElementById("nombre").value;
+      var u = document.getElementById("usuario").value;
+      var c = document.getElementById("contra").value;
+     
+      if(n==='' || u==='' || c===''){
+        swal("Error", "Llene todos los campos", "error");
+        event.preventDefault();
+      }else{
+        swal("Listo", "Usuario registrado", "success");
+        $("#agregar").click();
+      }
+    }
+
+    function aTienda(){
+      var n = document.getElementById("nombre").value;
+      var d = document.getElementById("dir").value;
+      if(n==='' || d===''){
+        swal("Error", "Llene todos los campos", "error");
+        event.preventDefault();
+      }else{
+        swal("Listo", "Usuario registrado", "success");
+        $("#agregar").click();
+      }
+    }
+
+    function regiP(){
+      var cod = document.getElementById("codigo").value;
+      var n = document.getElementById("nombre").value;
+      var p = document.getElementById("precio").value;
+      var s = document.getElementById("stock").value;
+      if(cod==='' || n==='' || p==='' || s===''){
+        swal("Error", "Llene todos los campos", "error");
+        event.preventDefault();
+      }else{
+        swal("Listo", "Producto registrado", "success");
+        $("#agregar").click();
+      }
+    }
+
+    function modificarTienda(){
+      var n = document.getElementById("nombre").value;
+      var d = document.getElementById("dir").value;
+
+      event.preventDefault();
+
+      if(n==='' || d===''){
+        swal("Error", "Llene todos los campos", "error");
+      }else{
+          swal({
+          title: "<h5 style='color: gray'>¿Seguro que quiere modificar esta tienda?</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificar();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+    }
+
+    function cambiar(){
+
+      var c = document.getElementById("contra_conf").value;
+      var id = getUrlVars();
+      var id2 = ""+id["id"];
+      if(c=="mario123" || c=="123"){
+          document.location.href="index.php?action=tiendas&id="+id2;
+      }else{
+        swal("Error", "Contraseña incorrecta", "error");
+        event.preventDefault();
+      }
+      
+    }
+
+    function verificarPro(){
+      var contra = document.getElementById("contra_conf").value;
+      var contra_real = document.getElementById("c_contra").value;
+      if(contra==contra_real){
+        $("#agregar").click();
+        swal("Listo", "Registro modificado", "success");
+      }else{
+        swal({
+          title: "<h6 style='color: gray'>Contraseña incorrecta</h6>",
+          html: true,
+        });
+      }
+    }
+
+    function verificarU(){
+      var contra = document.getElementById("contra_conf").value;
+      var contra_real = document.getElementById("c_contra").value;
+      if(contra==contra_real){
+        $("#agregar").click();
+        swal("Listo", "Registro modificado", "success");
+      }else{
+        swal({
+          title: "<h6 style='color: gray'>Contraseña incorrecta</h6>",
+          html: true,
+        });
+      }
+    }
+
+    function modiProd(){
+
+      var cod = document.getElementById("codigo").value;
+      var n = document.getElementById("nombre").value;
+      var p = document.getElementById("precio").value;
+      var s = document.getElementById("stock").value;
+
+      event.preventDefault();
+
+      if(cod==='' || n==='' || p==='' || s===''){
+        swal("Error", "Llene todos los campos", "error");
+      }else{
+        swal({
+          title: "<h5 style='color: gray'>¿Seguro que quiere modificar este producto?</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificarPro();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+
+    }
+
+    function verificarS(){
+      var contra = document.getElementById("contra_conf").value;
+      var contra_real = document.getElementById("c_contra").value;
+      if(contra==contra_real){
+        $("#agregar").click();
+        swal("Listo", "Operación exitosa", "success");
+      }else{
+        swal({
+          title: "<h6 style='color: gray'>Contraseña incorrecta</h6>",
+          html: true,
+        });
+      }
+    }
+
+    function agregarS(){
+
+      var ca = document.getElementById("cantidad").value;
+      var ref = document.getElementById("ref").value;
+
+      event.preventDefault();
+
+      if(ca==='' || ref===''){
+        swal("Error", "Llene todos los campos", "error");
+      }else{
+        swal({
+          title: "<h5 style='color: gray'>Confirme su contraseña</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificarS();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+
+    }
+
+    function quitarS(){
+
+      var ca = document.getElementById("cantidad").value;
+      var ref = document.getElementById("ref").value;
+
+      event.preventDefault();
+
+      if(ca==='' || ref===''){
+        swal("Error", "Llene todos los campos", "error");
+      }else{
+        swal({
+          title: "<h5 style='color: gray'>Confirme su contraseña</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificarS();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+
+    }
+
+    function regCat(){
+      var n = document.getElementById("nombre").value;
+      var des = document.getElementById("desc").value;
+      if(n==='' || des===''){
+        swal("Error", "Llene todos los campos", "error");
+        event.preventDefault();
+      }else{
+        swal("Listo", "Categoria registrada", "success");
+        $("#agregar").click();
+      }
+    }
+
+    function modiCat(){
+
+      var n = document.getElementById("nombre").value;
+      var des = document.getElementById("desc").value;
+
+      event.preventDefault();
+     
+      if(n==='' || des===''){
+          swal("Error", "Llene todos los campos", "error");
+      }else{
+          swal({
+          title: "<h5 style='color: gray'>¿Seguro que quiere modificar esta categoría?</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificarS();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+    }
+
+    function modiUsuarioT(){
+
+      var n = document.getElementById("nombre").value;
+      var u = document.getElementById("usuario").value;
+      var c = document.getElementById("contra").value;
+
+      event.preventDefault();
+     
+      if(n==='' || u==='' || c===''){
+          swal("Error", "Llene todos los campos", "error");
+      }else{
+          swal({
+          title: "<h5 style='color: gray'>¿Seguro que quiere modificar este usuario?</h5>",
+          text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-primary' value='Aceptar' id='aceptar' onclick='verificarU();'>",
+          html: true,
+          showCancelButton: false,
+          showConfirmButton: false,
+        });
+      }
+    }
 </script>

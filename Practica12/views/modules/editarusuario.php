@@ -11,11 +11,11 @@
             </div>
             </div>
             <div class="card-body">
-            	<form method="post">
+            	<form method="post" id="modificar" name="modificar">
                 <?php
                       //Creacion del objeto y llamado a sus metodos
             		      $editarUsu = new MvcController();
-                      $editarUsu->editarUsuarioController();
+                      $editarUsu->editarUsuarioGlobalController();
                 ?>
             	</form>
             </div>
@@ -26,6 +26,6 @@
 <?php
   //Creacion del objeto y llamado a sus metodos
   $modificarUsu = new MvcController();
-  $modificarUsu->modificarUsuarioController();
+  $modificarUsu->modificarUsuarioGlobalController();
 
 ?>

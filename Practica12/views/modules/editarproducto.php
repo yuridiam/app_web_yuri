@@ -5,8 +5,7 @@
               <h3 class="card-title">Modificar Producto</h3>
               <div class="card-tools">
                   <div class="btn-group">
-                    <a href="index.php?action=inventario"><button type="button" class="btn btn-tool">
-                    <i class="fa fa-times"></i></button></a>
+                     <?php echo "<a href='index.php?action=inventario&id_tienda=".$_GET["id_tienda"]."'><button type='button' class='btn btn-tool'><i class='fa fa-times'></i></button></a>";?>
                   </div>
             </div>
             </div>

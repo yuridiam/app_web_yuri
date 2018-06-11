@@ -5,16 +5,15 @@
               <h3 class="card-title">Nueva Categoría</h3>
               <div class="card-tools">
                   <div class="btn-group">
-                    <a href="index.php?action=categorias"><button type="button" class="btn btn-tool">
-                    <i class="fa fa-times"></i></button></a>
+                    <?php echo "<a href='index.php?action=categorias&id_tienda=".$_GET["id_tienda"]."'><button type='button' class='btn btn-tool'><i class='fa fa-times'></i></button></a>";?>
                   </div>
             </div>
             </div>
             <div class="card-body">
             	<form method="post">
-            		<input type="text" class="form-control" name="nombre" placeholder="Nombre de la categoría" required>
-                <textarea class="form-control" name="desc" placeholder="Descripción del producto" required></textarea><br>
-                <button type="submit" class="btn btn-block btn-outline-success" name="agregar">Registrar</button>
+            		<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre de la categoría">
+                <textarea class="form-control" name="desc" id="desc" placeholder="Descripción del producto" required></textarea><br>
+                <button type="submit" class="btn btn-block btn-outline-success" id="agregar" name="agregar" onclick="regCat();">Registrar</button>
             	</form>
             </div>
         </div>

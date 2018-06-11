@@ -5,8 +5,7 @@
               <h3 class="card-title">Nuevo Usuario</h3>
               <div class="card-tools">
                   <div class="btn-group">
-                    <a href="index.php?action=usuarios"><button type="button" class="btn btn-tool">
-                    <i class="fa fa-times"></i></button></a>
+                    <?php echo "<a href='index.php?action=usuariostienda&id_tienda=".$_GET["id_tienda"]."'><button type='button' class='btn btn-tool'><i class='fa fa-times'></i></button></a>";?>
                   </div>
             </div>
             </div>
@@ -15,15 +14,7 @@
             		    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
                     <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario">
                     <input type="text" class="form-control" name="contra" id="contra" placeholder="Contraseña">
-                    <select class="form-control select2" style="width: 100%" name="tienda">
-                      <?php
-                          //Creacion del objeto y llamado de sus objetos
-                          $traerTienda = new MvcController();
-                          $traerTienda->traerTiendasController();
-
-                      ?>
-                    </select><br><br>
-                    <button type="submit" class="btn btn-block btn-outline-success" id="agregar" onclick="aUsuario();" name="agregar">Registrar</button>
+                    <button type="submit" class="btn btn-block btn-outline-success" id="agregar" name="agregar" onclick="regUT();">Registrar</button>
             	</form>
             </div>
         </div>
@@ -32,6 +23,6 @@
 <?php
   //Creacion del objeto y llamado de sus objetos
   $registrarUsu = new MvcController();
-  $registrarUsu->registrarUsuarioGlobalController();
+  $registrarUsu->registrarUsuarioTiendaController();
 
 ?>

@@ -44,11 +44,29 @@ Class MvcController{
 				$_SESSION["validar"] = true;
 				$_SESSION["usuario"] = $respuesta["nombre"];
 				$_SESSION["id"] = $respuesta["id_usuario"];
-				//Se dirige al dashboard
-				header("location:index.php?action=dashboard");
+				$_SESSION["tienda"] = $respuesta["id_tienda"];
+				$_SESSION["contra"]=$respuesta["pass"];
+
+				if($_SESSION["tienda"]!=1){
+					$nom_ti = Datos::buscarTiendaModel($_SESSION["tienda"]);
+					if($nom_ti){
+						if($nom_ti["desactivado"]==0){
+							$_SESSION["nom_tienda"]=$nom_ti["nombre"];
+							header("location:index.php?action=dashboardtienda&id_tienda=" . $_SESSION["tienda"]);
+						}else{
+							header("location:index.php?action=nodisponible");
+						}
+					}
+				}else{
+					$_SESSION["nom_tienda"]="Superadmin";
+					//Se dirige al dashboard
+					header("location:index.php?action=dashboard");
+				}
+
 			}else{
 				//Si los datos no son correctos se dirige al login de nuevo
-				header("location:index.php?action=fallo");
+				header("location:index.php?action=error");
+				//header("location:index.php?action=fallo");
 			}
 
 		}
@@ -60,8 +78,10 @@ Class MvcController{
 		if(isset($_POST["agregar"])){
 			//Se obtiene la fecha actual del servidor
 			$fecha_actual = date('Y-m-d'); 
+			$id_tienda = $_GET["id_tienda"];
 			//Se almacenan los datos ingresados en un array
-			$datosController = array( "nombre"=>$_POST["nombre"], 
+			$datosController = array( "tienda" => $id_tienda,
+									"nombre"=>$_POST["nombre"], 
 								      "desc"=>$_POST["desc"],
 								  	"fecha"=>$fecha_actual);
 			
@@ -69,14 +89,7 @@ Class MvcController{
 			$respuesta=Datos::agregarCategoriaModel("categorias",$datosController);
 			//Si la insercion se lleva a cabo se imprime una alerta de exito
 			if($respuesta){
-				echo "<script type='text/javascript'>
-    					alert('Categoria registrada');
-  				  </script>";
-			}else{
-				//Si no se registra la categoria tambien muestra un alerta de error
-				echo "<script type='text/javascript'>
-    					alert('Ocurrió un problema');
-  				  </script>";
+				echo"<script language='javascript'>window.location='index.php?action=categorias&id_tienda=".$id_tienda."';</script>";
 			}
 		}
 	}
@@ -111,7 +124,7 @@ Class MvcController{
 	//Funcion que obtiene todas las categorias registradas en la base de datos que se cataloguen como existentes logicamente
 	public function traerCategoriasController(){
 		//Se ejecuta el modelo que consulta las categorias existentes
-		$respuesta = Datos::consultarModel("categorias");
+		$respuesta = Datos::consultarTiendaModel("categorias",$_GET["id_tienda"]);
 		//Se comprueba que la consulta se haya llevado a cabo y se imprimen en el select2
 		if($respuesta){
 			foreach ($respuesta as $fila) {
@@ -124,12 +137,14 @@ Class MvcController{
 	public function registrarProductoController(){
 		//Se comprueba que el boton se haya seleccionado
 		if(isset($_POST["agregar"])){
+			$idtienda = $_GET["id_tienda"];
 			//Se comprueba que el dato de precio ingresado realmente sea un numero
 			if(is_numeric($_POST["precio"])){
 				//Se almacena la fecha actual del servidor
 				$fecha_actual = date('Y-m-d'); 
 				//Se almacenan los datos ingresados en un array
-				$datosController = array( "codigo"=>$_POST["codigo"], 
+				$datosController = array( "tienda" => $idtienda,
+										  "codigo"=>$_POST["codigo"], 
 									      "nombre"=>$_POST["nombre"],
 									      "precio"=>$_POST["precio"],
 									      "stock"=>$_POST["stock"],
@@ -139,14 +154,7 @@ Class MvcController{
 				$respuesta=Datos::agregarProductoModel("productos",$datosController);
 				//Si la insercion se lleva a cabo se imprime una alerta de exito
 				if($respuesta){
-					echo "<script type='text/javascript'>
-	    					alert('Producto registrado');
-	  				  </script>";
-				}else{
-					//Si no se registra el alumno tambien muestra un alerta de error
-					echo "<script type='text/javascript'>
-	    					alert('Ocurrió un problema');
-	  				  </script>";
+					echo"<script language='javascript'>window.location='index.php?action=inventario&id_tienda=".$idtienda."';</script>";
 				}
 			}else{
 				//Si el precio ingresado no es un numero se imprime una alerta
@@ -212,7 +220,7 @@ Class MvcController{
 	//Funcion que muestra todos los productos registrados
 	public function vistaInventarioController(){
 		//Se manda a llamar el modelo que consulta todos los productos registrados y existentes logicamente
-		$respuesta = Datos::consultarModel("productos");
+		$respuesta = Datos::consultarTiendaModel("productos",$_GET["id_tienda"]);
 		//Si la consulta en el modelo se ejecuta exitosamente se recorre el array devuelto para imprimirlos
 		if($respuesta){
 			//Ciclo que recorre el array devuelto
@@ -227,9 +235,9 @@ Class MvcController{
 				<td>'.$fila["stock"].'</td>
 				<td>'.$categoria["nombre_categoria"].'</td>
 				<td>'.$fila["fecha_registro"].'</td>
-				<td><a href="index.php?action=editarproducto&id='.$fila["id_producto"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
-				<td><a href="index.php?action=eliminarproducto&idBorrar='.$fila["id_producto"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
-				<td><a href="index.php?action=stock&id='.$fila["id_producto"].'" class="btn btn-warning"><i class="fa fa-refresh"></i> Actualizar Stock</a></td>
+				<td><a href="index.php?action=editarproducto&id='.$fila["id_producto"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
+				<td><a href="index.php?action=eliminarproducto&idBorrar='.$fila["id_producto"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
+				<td><a href="index.php?action=stock&id='.$fila["id_producto"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-warning"><i class="fa fa-refresh"></i> Actualizar Stock</a></td>
 				</tr>';
 			}
 		}
@@ -241,19 +249,17 @@ Class MvcController{
 		//Se comprueba que las variables id y contra esten en la url para validar el usuario 
 		if(isset($_GET["id"]) && isset($_GET["contra"])){
 			//Se almacenan las variables individualmente
+			$tienda = $_GET["id_tienda"];
 			$usuario = $_SESSION["id"];
 			$contra = $_GET["contra"];
 			$produ = $_GET["id"];
-
-			//Se manda a llamar el modelo que valida la existencia de un usuario
-			$respuesta = Datos::buscarUsuarioModel($usuario, $contra);
 			//Si lo que retorna la consulta es un success se elimina el producto
-			if($respuesta=="success"){
+			if($contra == $_SESSION["contra"]){
 				//Se manda a llamar el modelo que elimina el producto logicamente de la base de datos
 				$respuesta2 = Datos::eliminarProductoModel($produ);
 				//Si se elimina el producto se dirige a la vista de inventario para ver los cambios
 				if($respuesta2){
-					echo"<script language='javascript'>window.location='index.php?action=inventario';</script>";
+					echo"<script language='javascript'>window.location='index.php?action=inventario&id_tienda=".$tienda."';</script>";
 				}
 			}else{
 				//Si no se devuelve success se imprime una alerta de error
@@ -280,20 +286,20 @@ Class MvcController{
                   		<div class='input-group-prepend'>
                     		<span class='input-group-text'><i class='fa fa-barcode'></i></span>
                     	</div>
-            			<input type='text' class='form-control' name='codigo' placeholder='Codigo del producto' style='width: 30%' value='".$respuesta["codigo_producto"]."' required>
+            			<input type='text' class='form-control' name='codigo' id='codigo' placeholder='Codigo del producto' style='width: 30%' value='".$respuesta["codigo_producto"]."'>
             		</div><br>";
-            	echo "<input type='text' class='form-control' name='nombre' placeholder='Nombre del producto' value='". $respuesta["nombre_producto"] ."' required>";
+            	echo "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre del producto' value='". $respuesta["nombre_producto"] ."'>";
             	echo "<div class='input-group'>
                   		<div class='input-group-prepend'>
                     		<span class='input-group-text'><i class='fa fa-usd'></i></span>
                   		</div>
-                  			<input type='text' class='form-control' name='precio' placeholder='Precio del producto' value='". $respuesta["precio_producto"] ."' required>
+                  			<input type='text' class='form-control' name='precio' id='precio' placeholder='Precio del producto' value='". $respuesta["precio_producto"] ."'>
                 	</div><br>";
                 echo "<div class='input-group'>
                   		<div class='input-group-prepend'>
                     		<span class='input-group-text'><i class='fa fa-cube'></i></span>
                   		</div>
-                  			<input type='number' class='form-control' name='stock' placeholder='Stock inicial' value='".$respuesta["stock"]."' required>
+                  			<input type='number' class='form-control' name='stock' id='stock' placeholder='Stock inicial' value='".$respuesta["stock"]."'>
                 	</div><br>";
 
                 echo "<select class='form-control select2' style='width: 100%' name='categoria'>";
@@ -305,7 +311,8 @@ Class MvcController{
         				  	}
                 		}		  
                 echo "</select><br><br>";
-                echo "<button type='submit' class='btn btn-block btn-outline-primary' name='agregar'>Modificar</button>";
+               	echo "<input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>";
+                echo "<button type='submit' class='btn btn-block btn-outline-primary' id='agregar' name='agregar' onclick='modiProd();'>Modificar</button>";
 			}
 		}
 
@@ -329,15 +336,7 @@ Class MvcController{
 				$respuesta=Datos::modificarProductoModel("productos",$datosController,$id);
 				//si la insercion se lleva a cabo se imprime una alerta de exito y dirige a la vista de inventario
 				if($respuesta){
-					echo "<script type='text/javascript'>
-	    					alert('Producto modificado');
-	  				  </script>";
-	  				echo"<script language='javascript'>window.location='index.php?action=inventario';</script>";
-				}else{
-					//Si no se registra el producto tambien muestra un alerta de error
-					echo "<script type='text/javascript'>
-	    					alert('Ocurrió un problema');
-	  				  </script>";
+					echo"<script language='javascript'>window.location='index.php?action=inventario&id_tienda=".$_GET["id_tienda"]."';</script>";
 				}
 			}else{
 				//Si el campo de precio no es numerico muestra un alerta
@@ -380,8 +379,8 @@ Class MvcController{
                       "</div>
                     </div>
                   </div>";
-                 echo '<a href="index.php?action=agregarstock&id='.$id.'" class="btn btn-success"> Agregar al stock</a>&nbsp;
-                        <a href="index.php?action=quitarstock&id='.$id.'" class="btn btn-danger"> Eliminar del stock</a>';
+                 echo '<a href="index.php?action=agregarstock&id='.$id.'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-success"> Agregar al stock</a>&nbsp;
+                        <a href="index.php?action=quitarstock&id='.$id.'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-danger"> Eliminar del stock</a>';
 			}
 		}
 	}
@@ -420,6 +419,7 @@ Class MvcController{
 			//Se comprueba que la variable id este activa en el url
 			if(isset($_GET["id"])){
 				//Se obtiene los datos necesarios y se alamacenan en variables
+				$id_tienda = $_GET["id_tienda"];
 				$time = time();
 				$id = $_GET["id"];
 				$usuario = $_SESSION["id"];
@@ -430,7 +430,8 @@ Class MvcController{
 				$ref = $_POST["ref"];
 				$nota = $_POST["nota"];
 				//Se guardan en un array
-				$datosController = array ("id_producto" => $id,
+				$datosController = array (	"tienda" => $id_tienda,
+											"id_producto" => $id,
 											"id_usuario" => $usuario,
 											"fecha" => $fecha_actual,
 											"hora" => $hora_actual,
@@ -442,16 +443,10 @@ Class MvcController{
 				//Modelo que actualiza el stock
 				$respuesta = Datos::sumarYrestarStockModel($cantidad, $id, 1);
 				//Si se ejecuta la consulta se actualiza la cantidad del stock en el producto
-				if($respuesta){
+				if($respuesta=="listo"){
 					//Se manda a llamar un modelo que agrega o quita cantidad de productos en stock
 					$respuesta2 = Datos::agregarOquitarStockModel($datosController);
-					//Si se actualiza el stock muestra una alerta y se dirige a los detalles del producto
-					if($respuesta2){
-						echo "<script type='text/javascript'>
-	    					alert('Añadido al stock');
-	  				  		</script>";
-	  					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$id."';</script>";
-					}
+					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$_GET["id"]."&id_tienda=".$id_tienda."';</script>";
 				}
 			}
 		}
@@ -465,6 +460,7 @@ Class MvcController{
 			//Se comprieba que la variable id este activa en el url
 			if(isset($_GET["id"])){
 				//Se obtienen los datos ingresados y necesarios para almacenarlos en una array
+				$id_tienda = $_GET["id_tienda"];
 				$time = time();
 				$id = $_GET["id"];
 				$usuario = $_SESSION["id"];
@@ -475,7 +471,8 @@ Class MvcController{
 				$ref = $_POST["ref"];
 				$nota = $_POST["nota"];
 
-				$datosController = array ("id_producto" => $id,
+				$datosController = array (	"tienda" => $id_tienda,
+											"id_producto" => $id,
 											"id_usuario" => $usuario,
 											"fecha" => $fecha_actual,
 											"hora" => $hora_actual,
@@ -486,22 +483,10 @@ Class MvcController{
 				//Se manda a llamar el modelo que actualiza la cantidad del stock
 				$respuesta = Datos::sumarYrestarStockModel($cantidad, $id, 2);
 				//Si la consulta se lleva a cabo se actualiza el stock
-				if($respuesta){
+				if($respuesta=="listo"){
 					//Se manda a llamar el modelo que agrega o quita la cantidad de stock
-					$respuesta2 = Datos::agregarOquitarStockModel($datosController);
-					//Si se actualiza el stock muestra una alerta de exito y se dirige a los detalles del producto
-					if($respuesta == "error"){
-						echo "<script type='text/javascript'>
-	    					alert('No hay unidades suficientes, no se realizó la acción');
-	  				  		</script>";
-	  					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$id."';</script>";
-
-					}else{
-						echo "<script type='text/javascript'>
-	    					alert('Se ha eliminado del stock');
-	  				  		</script>";
-	  					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$id."';</script>";
-					}
+						$respuesta2 = Datos::agregarOquitarStockModel($datosController);
+	  					echo"<script language='javascript'>window.location='index.php?action=stock&id=".$_GET["id"]."&id_tienda=".$id_tienda."';</script>";
 				}
 			}
 		}
@@ -511,7 +496,7 @@ Class MvcController{
 	//Funcion que muestra los ultimos movimientos en el dashboard
 	public function ultimosMovimientosController(){
 		//Se manda a llamar el modelo que consulta los registros de la base de datos
-		$respuesta=Datos::consultarModel("historial");
+		$respuesta=Datos::consultarTiendaModel("historial",$_GET["id_tienda"]);
 		//Si se lleva a cabo la consulta se recorre un el array devuevlto y se imprimen las filas
 		if($respuesta){
 			foreach ($respuesta as $fila) {
@@ -532,6 +517,32 @@ Class MvcController{
 		}
 	}
 
+	//Funcion que muestra los ultimos movimientos en el dashboard
+	public function ultimosMovimientosGlobalController(){
+		//Se manda a llamar el modelo que consulta los registros de la base de datos
+		$respuesta=Datos::consultarModel("historial");
+		//Si se lleva a cabo la consulta se recorre un el array devuevlto y se imprimen las filas
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				$producto = Datos::buscarProductoModel($fila["id_producto"]);
+				$usuario = Datos::buscarU($fila["id_usuario"]);
+				$tienda = Datos::buscarTiendaModel($fila["id_tienda"]);
+				echo '<tr>
+				<td>'.$fila["id_historial"].'</td>
+				<td>'.$producto["nombre_producto"].'</td>
+				<td>'.$usuario["nombre"].'</td>
+				<td>'.$fila["fecha"].'</td>
+				<td>'.$fila["hora"].'</td>
+				<td>'.$fila["nota"].'</td>
+				<td>'.$fila["referencia"].'</td>
+				<td>'.$fila["cantidad"].'</td>
+				<td>'.$fila["movimiento"].'</td>
+				<td>'.$tienda["nombre"].'</td>
+				</tr>';
+			}
+		}
+	}
+
 	//Funcion que muestra las categorias existentes logicamente en la base de datos
 	public function vistaCategoriasController(){
 		//Se manda a llamar el modelo que consulta la tabla en la base de datos
@@ -543,8 +554,8 @@ Class MvcController{
 				<td>'.$fila["nombre_categoria"].'</td>
 				<td>'.$fila["descripcion_categoria"].'</td>
 				<td>'.$fila["fecha_registro"].'</td>
-				<td><a href="index.php?action=editarcategoria&id='.$fila["id_categoria"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
-				<td><a href="index.php?action=eliminarcategoria&idBorrar='.$fila["id_categoria"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
+				<td><a href="index.php?action=editarcategoria&id='.$fila["id_categoria"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
+				<td><a href="index.php?action=eliminarcategoria&idBorrar='.$fila["id_categoria"]. '&id_tienda='.$_GET["id_tienda"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
 				</tr>';
 			}
 		}
@@ -560,9 +571,10 @@ Class MvcController{
 			$respuesta = Datos::buscarCategoriaModel($id);
 			//Si se ejecuta la consulta se imprimen los campos
 			if($respuesta){
-				echo "<input type='text' class='form-control' name='nombre' placeholder='Nombre de la categoría' value='".$respuesta["nombre_categoria"]."' required>
-                <textarea class='form-control' name='desc' placeholder='Descripción del producto' required>".$respuesta["descripcion_categoria"]."</textarea><br>
-                <button type='submit' class='btn btn-block btn-outline-primary' name='agregar'>Modificar</button>";
+				echo "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre de la categoría' value='".$respuesta["nombre_categoria"]."'>
+                <textarea class='form-control' name='desc' id='desc' placeholder='Descripción del producto' required>".$respuesta["descripcion_categoria"]."</textarea><br>
+                <input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>
+                <button type='submit' class='btn btn-block btn-outline-primary' id='agregar' name='agregar' onclick='modiCat();'>Modificar</button>";
 			}
 		}
 
@@ -574,6 +586,8 @@ Class MvcController{
 		$id = $_GET["id"];
 		//Se comprueba que el boton se haya seleccionado
 		if(isset($_POST["agregar"])){
+
+			$id_tienda = $_GET["id_tienda"];
 			
 			//Se almacenan los datos en un array
 			$datosController = array(  "id" => $id,
@@ -583,15 +597,7 @@ Class MvcController{
 			$respuesta=Datos::modificarCategoriaModel("categorias",$datosController);
 			//Si la actualizacion se lleva a cabo se imprime una alerta de exito
 			if($respuesta){
-				echo "<script type='text/javascript'>
-    					alert('Categoria modificada');
-  				  </script>";
-  				echo"<script language='javascript'>window.location='index.php?action=categorias';</script>";
-			}else{
-				//Si no se actualiza tambien muestra un alerta de error
-				echo "<script type='text/javascript'>
-    					alert('Ocurrió un problema');
-  				  </script>";
+				echo"<script language='javascript'>window.location='index.php?action=categorias&id_tienda=".$id_tienda."';</script>";
 			}
 		}
 	}
@@ -602,17 +608,19 @@ Class MvcController{
 		if(isset($_GET["id"]) && isset($_GET["contra"])){
 			//Se almacenan las variables
 			$usuario = $_SESSION["id"];
+			$contra_i = $_SESSION["contra"];
 			$contra = $_GET["contra"];
 			$categoria = $_GET["id"];
+			$id_tienda = $_GET["id_tienda"];
 			//Se manda a llamar el modelo que busca al usuario en la base de datos
 			$respuesta = Datos::buscarUsuarioModel($usuario, $contra);
 			//Si devuelve success se elimina la categoria
-			if($respuesta=="success"){
+			if($contra_i == $contra){
 				//Modelo que elimina la categoria logicamente
 				$respuesta2 = Datos::eliminarCategoriaModel($categoria);
 				//Si se elimina la categoria se dirige a la vista de categorias
 				if($respuesta2){
-					echo"<script language='javascript'>window.location='index.php?action=categorias';</script>";
+					echo"<script language='javascript'>window.location='index.php?action=categorias&id_tienda=".$id_tienda."';</script>";
 				}
 			}else{
 				//Si no se lleva a cabo se imprime una alerta
@@ -631,14 +639,18 @@ Class MvcController{
 		if($respuesta){
 			foreach ($respuesta as $fila) {
 				//Se imprimen las filas de las tablas
-				echo'<tr>
-				<td>'.$fila["nombre"].'</td>
-				<td>'.$fila["usuario"].'</td>
-				<td>'.$fila["pass"].'</td>
-				<td>'.$fila["fecha_registro"].'</td>
-				<td><a href="index.php?action=editarusuario&id='.$fila["id_usuario"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
-				<td><a href="index.php?action=eliminarusuario&idBorrar='.$fila["id_usuario"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
-				</tr>';
+				$tienda = Datos::buscarTiendaModel($fila["id_tienda"]);
+				if($tienda["nombre"]!="default"){
+					echo'<tr>
+					<td>'.$fila["nombre"].'</td>
+					<td>'.$fila["usuario"].'</td>
+					<td>'.$fila["pass"].'</td>
+					<td>'.$fila["fecha_registro"].'</td>
+					<td>'.$tienda["nombre"].'</td>
+					<td><a href="index.php?action=editarusuario&id='.$fila["id_usuario"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
+					<td><a href="index.php?action=eliminarusuario&idBorrar='.$fila["id_usuario"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
+					</tr>';
+				}
 			}
 		}
 	}
@@ -656,7 +668,7 @@ Class MvcController{
 				echo "<input type='text' class='form-control' name='nombre' placeholder='Nombre' value='".$respuesta["nombre"]."' required>
                     <input type='text' class='form-control' name='usuario' placeholder='Usuario' value='".$respuesta["usuario"]. "' required>
                     <input type='text' class='form-control' name='contra' placeholder='Contraseña' value='".$respuesta["pass"]. "'required>
-                    <button type='submit' class='btn btn-block btn-outline-primary' name='agregar'>Modificar</button>";
+                    <a href='index.php?action=confirmacionmodificar'><button type='button' class='btn btn-block btn-outline-primary' name='agregar'>Modificar</button></a>";
 			}
 		}
 
@@ -667,7 +679,7 @@ Class MvcController{
 		//Se almacena la variable id 
 		$id = $_GET["id"];
 		//Se comprueba que el boton se haya seleccionado
-		if(isset($_POST["agregar"])){
+		if(isset($_POST["modi"])){
 			
 			//Se almacenan los datos en un array
 			$datosController = array(  "id" => $id,
@@ -717,6 +729,395 @@ Class MvcController{
 			}
 		}
 	}
+
+	//Funcion que obtiene todas las categorias registradas en la base de datos que se cataloguen como existentes logicamente
+	public function traerTiendasController(){
+		//Se ejecuta el modelo que consulta las categorias existentes
+		$respuesta = Datos::consultarModel("tienda");
+		//Se comprueba que la consulta se haya llevado a cabo y se imprimen en el select2
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				if($fila["nombre"]!="default"){
+					echo '<option value="'.$fila["id_tienda"].'">'.$fila["nombre"].'</option>';
+				}
+			}
+		}
+	}
+
+	public function registrarUsuarioGlobalController(){
+
+		//Se comprueba que el boton se haya seleccionado
+		if(isset($_POST["agregar"])){
+			//Se obtiene la fecha actual del servidor
+			$fecha_actual = date('Y-m-d'); 
+			//Se almacenan los datos ingresados en un array
+			$datosController = array( "nombre"=>$_POST["nombre"], 
+								      "usuario"=>$_POST["usuario"],
+								      "contra"=>$_POST["contra"],
+								  	"fecha"=>$fecha_actual,
+								  	"tienda"=>$_POST["tienda"],
+								  	"tipo"=>"2");
+			//Se manda a llamar el modelo que registra al usuario en la base de datos
+			$respuesta=Datos::agregarUsuarioModel("usuarios",$datosController);
+			//Si la insercion se lleva a cabo se imprime una alerta de exito
+			if($respuesta){
+				echo"<script language='javascript'>window.location='index.php?action=usuarios';</script>";
+			}
+		}
+
+	}
+
+	public function editarUsuarioGlobalController(){
+		//Se comprueba que la variable id este activa en la url
+		if(isset($_GET["id"])){
+			//Se almacena la variable
+			$id = $_GET["id"];
+			//Se ejecuta el modelo que busca al usuario
+			$respuesta = Datos::buscarU($id);
+			//Si muestran los campos necesarios
+			if($respuesta){
+				$tiendas = Datos::consultarModel("tienda");
+				echo "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre' value='".$respuesta["nombre"]."' required>
+                    <input type='text' class='form-control' name='usuario' id='usuario' placeholder='Usuario' value='".$respuesta["usuario"]. "' required>
+                    <input type='text' class='form-control' name='contra' id='contra' placeholder='Contraseña' value='".$respuesta["pass"]. "'required>";
+	             echo "<select class='form-control select2' style='width: 100%' name='tienda'>";
+	        		foreach ($tiendas as $fila) {
+					  	if($fila["id_tienda"]==$respuesta["id_tienda"]){
+					  		echo '<option value="'.$fila["id_tienda"].'" selected>'.$fila["nombre"].'</option>';
+					  	}else{
+					  		if($fila["nombre"]!="default"){
+					  			echo '<option value="'.$fila["id_tienda"].'">'.$fila["nombre"].'</option>';;
+					  		}
+					  	}
+	        		}		  
+                echo "</select><br><br>";
+                echo "<button type='submit' class='btn btn-block btn-outline-primary' id='agregar' name='agregar' onclick='modi();'>Modificar</button>";
+			}
+		}
+
+	}
+
+	public function modificarUsuarioGlobalController(){
+		//Se almacena la variable id 
+		$id = $_GET["id"];
+		//Se comprueba que el boton se haya seleccionado
+		if(isset($_POST["agregar"])){
+				//Se almacenan los datos en un array
+				$datosController = array( "id" => $id,
+											"nombre"=>$_POST["nombre"],
+									      "usuario"=>$_POST["usuario"],
+									  		"contra"=>$_POST["contra"],
+									  		"tienda"=>$_POST["tienda"]);
+
+				//Se manda a llamar el modelo que modifica el usuario en la base de datos
+				$respuesta=Datos::modificarUsuarioModel("usuarios",$datosController);
+				//Si la actualizacion se lleva a cabo se imprime una alerta de exito
+				if($respuesta){
+	  				echo"<script language='javascript'>window.location='index.php?action=usuarios';</script>";
+				}
+		}
+	}
+
+	//Funcion que elimina un usuario de manera logica de la base de datos
+	public function eliminarUsuarioGlobalController(){
+		//Se comprueba que las variables id y contra estena ctivas en la url
+		if(isset($_GET["id"]) && isset($_GET["contra"])){
+			//Se alamcenan las variables necesarias
+			$usuario = $_SESSION["id"];
+			$contra = $_GET["contra"];
+			$usuario = $_GET["id"];
+			//Se manda a llamar al modelo que busca al usuario y comprueba que existe
+			$respuesta = Datos::buscarUsuarioModel($usuario, $contra);
+			//Si el usuario existe manda success
+			if($respuesta=="success"){
+				//Se manda a llamar el modelo que elimina al usuario
+				$respuesta2 = Datos::eliminarUsuarioModel($usuario);
+				//Si se elimina el usuario se dirige a la vista de usuarios
+				if($respuesta2){
+					echo"<script language='javascript'>window.location='index.php?action=usuarios';</script>";
+				}else{
+  				  echo"<script language='javascript'>window.location='index.php?action=usuarios';</script>";
+				}
+			}else{
+				//Si no se encuentra el usuario se muestra una alerta
+				echo "<script type='text/javascript'>
+    					alert('Contraseña incorrecta');
+  				  </script>";
+			}
+		}
+	}
+
+	function vistaTiendaController(){
+
+		$respuesta = Datos::todasTiendasModel();
+		//Si la consulta en el modelo se ejecuta exitosamente se recorre el array devuelto para imprimir los usuarios
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				//Se imprimen las filas de las tablas
+				if($fila["nombre"]!="default"){
+
+					echo'<tr>
+					<td>'.$fila["nombre"].'</td>
+					<td>'.$fila["direccion"].'</td>
+					<td><a href="index.php?action=editartienda&id='.$fila["id_tienda"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>';
+					if($fila["desactivado"]==0){
+
+						echo '<td><a href="index.php?action=confirmarestado&id='.$fila["id_tienda"].'" class="btn btn-danger"><i class="fa fa-times"></i> Desactivar</a></td>';
+
+					}else{
+						echo '<td><a href="index.php?action=confirmarestado&id='.$fila["id_tienda"].'" class="btn btn-success"><i class="fa fa-check"></i> Activar</a></td>';
+					}
+					echo '<td><a href="index.php?action=dashboardtienda&id_tienda='.$fila["id_tienda"].'" class="btn btn-warning"><i class="fa fa-home"></i> Ingresar</a></td>';
+
+				}
+			
+			}
+		}
+
+	}
+
+	function registrarTiendaController(){
+
+		if(isset($_POST["agregar"])){
+			//Se almacenan los datos ingresados en un array
+			$datosController = array( "nombre"=>$_POST["nombre"], 
+								      "direccion"=>$_POST["dir"]);
+			//Se manda a llamar el modelo que registra al usuario en la base de datos
+			$respuesta=Datos::agregarTiendaModel("tienda",$datosController);
+			//Si la insercion se lleva a cabo se imprime una alerta de exito
+			if($respuesta){
+				echo"<script language='javascript'>window.location='index.php?action=tiendas';</script>";
+			}
+		}
+
+	}
+
+	function editarTiendaController(){
+
+		if(isset($_GET["id"])){
+			//Se almacena la variable
+			$id = $_GET["id"];
+			//Se ejecuta el modelo que busca al usuario
+			$respuesta = Datos::buscarTiendaModel($id);
+			//Si muestran los campos necesarios
+			if($respuesta){
+				echo "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre' value='".$respuesta["nombre"]."'>
+                    <input type='text' class='form-control' name='dir' id='dir' placeholder='Descripción' value='".$respuesta["direccion"]. "'>";
+                echo "<button type='submit' class='btn btn-block btn-outline-primary' id='agregar' name='agregar' onclick='modificarTienda();'>Modificar</button>";
+			}
+		}
+
+	}
+
+	function modificarTiendaController(){
+
+		//Se almacena la variable id 
+		$id = $_GET["id"];
+		//Se comprueba que el boton se haya seleccionado
+		if(isset($_POST["agregar"])){
+				//Se almacenan los datos en un array
+				$datosController = array( "id" => $id,
+											"nombre"=>$_POST["nombre"],
+									      "direccion"=>$_POST["dir"]);
+
+				//Se manda a llamar el modelo que modifica el usuario en la base de datos
+				$respuesta=Datos::modificarTiendaModel("tienda",$datosController);
+				//Si la actualizacion se lleva a cabo se imprime una alerta de exito
+				if($respuesta){
+	  				echo"<script language='javascript'>window.location='index.php?action=tiendas';</script>";
+				}
+		}
+
+	}
+
+	function desActTiendaController(){
+		if(isset($_GET["id"])){
+			$id = $_GET["id"];
+			$respuesta=Datos::opTiendaModel($id);
+			if($respuesta){
+				echo"<script language='javascript'>window.location='index.php?action=tiendas';</script>";
+			}
+
+		}
+	}
+
+	function tiendaController(){
+		$idtienda = $_GET["id_tienda"];
+		$tienda = Datos::buscarTiendaModel($idtienda);
+		echo "<a class='d-block'><i class='nav-icon fa fa-home'></i>&ensp;" . $tienda["nombre"] . "</a>";
+	}
+
+	//Funcion que cuenta todos los productos registrados catalogados logicamente como existentes (es decir, con el campo eliminado como 0)
+	public function contarProductosTiendaController(){
+		$id_tienda = $_GET["id_tienda"];
+		//Se ejecuta el modelo que consulta los registros de una tabla
+		$respuesta = Datos::totalesTiendaModel("productos",$id_tienda);
+		//Se comprueba que la consulta se haya llevado a cabo y se imprimen los resultados
+		if($respuesta){
+			echo $respuesta;
+		}else{
+		//Si no se encontraron registros se imprime un 0
+			echo "0";
+		}
+	}
+
+	//Funcion que cuenta todos los usuarios registrados catalogados logicamente como existentes (es decir, con el campo eliminado como 0)
+	public function contarUsuariosTiendaController(){
+		$id_tienda = $_GET["id_tienda"];
+		//Se ejecuta el modelo que consulta los usuarios existentes
+		$respuesta = Datos::totalesTiendaModel("usuarios", $id_tienda);
+		//Se comprueba que la consulta se haya llevado a cabo y se imprimen los resultados
+		if($respuesta){
+			echo $respuesta;
+		}else{
+			echo "0";
+		}
+	}
+
+	//Funcion que cuenta todos las categorias registrados catalogados logicamente como existentes (es decir, con el campo eliminado como 0)
+	public function contarCategoriasTiendaController(){
+		$id_tienda = $_GET["id_tienda"];
+		//se ejecuta el modelo que consulta las categorias existentes
+		$respuesta = Datos::totalesTiendaModel("categorias", $id_tienda);
+		//se comprueba que la consulta se haya llevado a cabo y se imprimen los resultados
+		if($respuesta){
+			echo $respuesta;
+		}else{
+			//Si no se encontraron registros se imprime un 0
+			echo "0";
+		}
+	}
+
+	//Funcion que cuenta todos los movimientos registrados catalogados logicamente como existentes (es decir, con el campo eliminado como 0)
+	public function contarMovimientosTiendaController(){
+		$id_tienda = $_GET["id_tienda"];
+		//se ejecuta el modelo que consulta los movimientos existentes
+		$respuesta = Datos::totalesTiendaModel("historial", $id_tienda);
+		//se comprueba que la consulta se haya llevado a cabo y se imprimen los resultados
+		if($respuesta){
+			echo $respuesta;
+		}else{
+			//Si no se encontraron registros se imprime un 0
+			echo "0";
+		}
+	}
+
+	//Funcion que muestra los usuarios registrados y existentes de forma logica en la base de datos
+	public function vistaUsuarioTiendaController(){
+		//Se manda a llamar el modelo que que trae a todos los usuarios
+		$respuesta = Datos::consultarTiendaModel("usuarios",$_GET["id_tienda"]);
+		//Si la consulta en el modelo se ejecuta exitosamente se recorre el array devuelto para imprimir los usuarios
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				//Se imprimen las filas de las tablas
+				if($fila["id_usuario"]!=$_SESSION["id"]){
+					echo'<tr>
+					<td>'.$fila["nombre"].'</td>
+					<td>'.$fila["usuario"].'</td>
+					<td>'.$fila["pass"].'</td>
+					<td>'.$fila["fecha_registro"].'</td>
+					<td><a href="index.php?action=editarusuariotienda&id='.$fila["id_usuario"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-info"><i class="fa fa-edit"></i> Editar</a></td>
+					<td><a href="index.php?action=eliminarusuariotienda&idBorrar='.$fila["id_usuario"].'&id_tienda='.$_GET["id_tienda"].'" class="btn btn-danger"><i class="fa fa-times"></i> Eliminar</a></td>
+					</tr>';
+					
+				}
+			}
+		}
+	}
+
+	public function editarUsuarioTiendaController(){
+		//Se comprueba que la variable id este activa en la url
+		if(isset($_GET["id"])){
+			//Se almacena la variable
+			$id = $_GET["id"];
+			//Se ejecuta el modelo que busca al usuario
+			$respuesta = Datos::buscarU($id);
+			//Si muestran los campos necesarios
+			if($respuesta){
+				echo "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre' value='".$respuesta["nombre"]."' required>
+                    <input type='text' class='form-control' name='usuario' id='usuario' placeholder='Usuario' value='".$respuesta["usuario"]. "' required>
+                    <input type='text' class='form-control' name='contra' id='contra' placeholder='Contraseña' value='".$respuesta["pass"]. "'required>
+                    <input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>";
+                echo "<button type='submit' class='btn btn-block btn-outline-primary' id='agregar' name='agregar' onclick='modiUsuarioT();'>Modificar</button>";
+			}
+		}
+
+	}
+
+	public function modificarUsuarioTiendaController(){
+		//Se almacena la variable id 
+		$id = $_GET["id"];
+		$id_tienda = $_GET["id_tienda"];
+		//Se comprueba que el boton se haya seleccionado
+		if(isset($_POST["agregar"])){
+				//Se almacenan los datos en un array
+				$datosController = array( "id" => $id,
+											"nombre"=>$_POST["nombre"],
+									      "usuario"=>$_POST["usuario"],
+									  		"contra"=>$_POST["contra"],
+									  		"tienda"=>$id_tienda);
+
+				//Se manda a llamar el modelo que modifica el usuario en la base de datos
+				$respuesta=Datos::modificarUsuarioModel("usuarios",$datosController);
+				//Si la actualizacion se lleva a cabo se imprime una alerta de exito
+				if($respuesta){
+	  				echo"<script language='javascript'>window.location='index.php?action=usuariostienda&id_tienda=".$id_tienda."';</script>";
+				}
+		}
+	}
+
+	//Funcion que elimina un usuario de manera logica de la base de datos
+	public function eliminarUsuarioTiendaController(){
+		//Se comprueba que las variables id y contra estena ctivas en la url
+		if(isset($_GET["id"]) && isset($_GET["contra"])){
+			//Se alamcenan las variables necesaria
+			$id = $_GET["id"];
+			$contra = $_GET["contra"];
+			$contra_i = $_SESSION["contra"];
+			$id_tienda = $_GET["id_tienda"];
+			//Si el usuario existe manda success
+			if($contra_i == $contra){
+				//Se manda a llamar el modelo que elimina al usuario
+				$respuesta2 = Datos::eliminarUsuarioModel($id);
+				echo"<script language='javascript'>window.location='index.php?action=usuariostienda&id_tienda=".$id_tienda."';</script>";
+
+			}else{
+				//Si no se encuentra el usuario se muestra una alerta
+				echo "<script type='text/javascript'>
+    					alert('Contraseña incorrecta');
+  				  </script>";
+			}
+		}
+	}
+
+	//Funcion que registra un usuario
+	public function registrarUsuarioTiendaController(){
+		//Se comprueba que el boton se haya seleccionado
+		if(isset($_POST["agregar"])){
+			//Se obtiene la fecha actual del servidor
+			$fecha_actual = date('Y-m-d'); 
+			$id_tienda = $_GET["id_tienda"];
+			//Se almacenan los datos ingresados en un array
+			$datosController = array( "nombre"=>$_POST["nombre"], 
+								      "usuario"=>$_POST["usuario"],
+								      "contra"=>$_POST["contra"],
+								  	"fecha"=>$fecha_actual,
+								  	"tipo"=>2,
+								  	"tienda"=>$id_tienda);
+			//Se manda a llamar el modelo que registra al usuario en la base de datos
+			$respuesta=Datos::agregarUsuarioModel("usuarios",$datosController);
+			//Si la insercion se lleva a cabo se imprime una alerta de exito
+			if($respuesta){
+
+				echo"<script language='javascript'>window.location='index.php?action=usuariostienda&id_tienda=".$id_tienda."';</script>";
+				
+			}
+		}
+	}
+
+
+
+
 
 
 }

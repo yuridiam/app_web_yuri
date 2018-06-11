@@ -5,8 +5,9 @@
               <h3 class="card-title">Categorías</h3>
             </div>
             <br>
-           <a href="index.php?action=registrarcategoria"><input type="button" name="agregar" class="btn btn-block btn-success" style="width: 15%; margin-left: 845px" value="Agregar Categoría"></a>
+           <?php echo " <a href='index.php?action=registrarcategoria&id_tienda=".$_GET["id_tienda"]."'><input type='button' name='agregar' class='btn btn-block btn-success' style='width: 15%; margin-left: 845px' value='Agregar Categoría'></a>"; ?> 
             <div class="card-body">
+              <div class="table-responsive">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -25,6 +26,7 @@
                   ?>
                 </tbody>
               </table>
+              </div>
             </div>
             <!-- /.card-body -->
           </div>

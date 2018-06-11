@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-06-2018 a las 03:11:57
+-- Tiempo de generación: 11-06-2018 a las 11:18:38
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -33,18 +33,18 @@ CREATE TABLE `categorias` (
   `nombre_categoria` varchar(100) NOT NULL,
   `descripcion_categoria` varchar(200) NOT NULL,
   `eliminado` int(11) NOT NULL DEFAULT '0',
-  `fecha_registro` varchar(10) NOT NULL
+  `fecha_registro` varchar(10) NOT NULL,
+  `id_tienda` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `categorias`
 --
 
-INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`, `descripcion_categoria`, `eliminado`, `fecha_registro`) VALUES
-(1, 'Carnes Frias', 'Todo tipo de carne', 1, '2018-06-02'),
-(2, 'Ropa', 'Todo tipo de ropa unisex', 0, '2018-06-02'),
-(3, 'Harina y MaÃ­z', 'Todo tipo de alimentos hechos con harina y maÃ­z', 0, '2018-06-03'),
-(4, 'Salchichoneria', 'Todo tipo de corte', 1, '2018-06-04');
+INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`, `descripcion_categoria`, `eliminado`, `fecha_registro`, `id_tienda`) VALUES
+(1, 'Carnes', 'todo tipo de carnes', 0, '2018-06-02', 2),
+(2, 'Panaderia', 'Todo tipo de pan', 1, '2018-06-03', 4),
+(3, 'Variedades', 'Variedad', 1, '2018-06-11', 2);
 
 -- --------------------------------------------------------
 
@@ -62,22 +62,25 @@ CREATE TABLE `historial` (
   `referencia` varchar(100) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `movimiento` varchar(100) NOT NULL,
-  `eliminado` int(11) NOT NULL DEFAULT '0'
+  `eliminado` int(11) NOT NULL DEFAULT '0',
+  `id_tienda` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `historial`
 --
 
-INSERT INTO `historial` (`id_historial`, `id_producto`, `id_usuario`, `fecha`, `hora`, `nota`, `referencia`, `cantidad`, `movimiento`, `eliminado`) VALUES
-(1, 1, 2, '03-06-2018', '01:58:20', 'hola', '18383', 10, 'se quito del stock', 1),
-(2, 1, 1, '2018-06-03', '20:46:57', 'hola', '64873', 10, 'Se agregÃ³ al stock', 1),
-(3, 2, 1, '2018-06-03', '20:48:26', 'hola', '78363', 1000, 'Se agregÃ³ al stock', 0),
-(4, 1, 1, '2018-06-03', '21:00:32', 'hola222', '837837', 1, 'Se agregÃ³ al stock', 1),
-(5, 1, 1, '2018-06-03', '21:00:44', 'holajeje', '49794', 20, 'Se quitÃ³ del stock', 1),
-(6, 2, 1, '2018-06-03', '21:01:34', 'kdfjljf', '94874', 1001, 'Se quitÃ³ del stock', 0),
-(7, 3, 2, '2018-06-03', '22:56:38', 'Con nuevo tipo de tela', '193883', 300, 'Se agregÃ³ al stock', 0),
-(8, 4, 2, '2018-06-04', '00:26:46', '', '8498', 50, 'Se agregÃ³ al stock', 1);
+INSERT INTO `historial` (`id_historial`, `id_producto`, `id_usuario`, `fecha`, `hora`, `nota`, `referencia`, `cantidad`, `movimiento`, `eliminado`, `id_tienda`) VALUES
+(5, 1, 9, '2018-06-11', '09:03:05', '', '930903', 10, 'Se agregÃ³ al stock', 0, 2),
+(6, 1, 9, '2018-06-11', '09:05:16', '', '0439', 80, 'Se agregÃ³ al stock', 0, 2),
+(7, 1, 9, '2018-06-11', '09:05:42', '', '939', 10, 'Se agregÃ³ al stock', 0, 2),
+(8, 1, 9, '2018-06-11', '09:07:00', '', '09390', 10, 'Se agregÃ³ al stock', 0, 2),
+(9, 1, 9, '2018-06-11', '09:16:06', '', '949', 10, 'Se quitÃ³ del stock', 0, 2),
+(11, 1, 9, '2018-06-11', '09:19:40', '', '9340', 20, 'Se quitÃ³ del stock', 0, 2),
+(12, 1, 9, '2018-06-11', '09:20:54', '', '04993', 10, 'Se quitÃ³ del stock', 0, 2),
+(13, 1, 9, '2018-06-11', '09:21:08', '', '0939', 100, 'Se agregÃ³ al stock', 0, 2),
+(14, 1, 7, '2018-06-11', '09:22:24', '', '39890', 10, 'Se agregÃ³ al stock', 0, 2),
+(15, 3, 9, '2018-06-11', '09:25:22', '', '09382', 100, 'Se agregÃ³ al stock', 0, 4);
 
 -- --------------------------------------------------------
 
@@ -93,18 +96,41 @@ CREATE TABLE `productos` (
   `stock` int(11) NOT NULL,
   `id_categoria` int(11) NOT NULL,
   `eliminado` int(11) NOT NULL DEFAULT '0',
-  `fecha_registro` varchar(10) NOT NULL
+  `fecha_registro` varchar(10) NOT NULL,
+  `id_tienda` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id_producto`, `codigo_producto`, `nombre_producto`, `precio_producto`, `stock`, `id_categoria`, `eliminado`, `fecha_registro`) VALUES
-(1, '102938', 'Chuleta de Lomo de Cerdo', 40.2, 0, 1, 1, '2018-06-02'),
-(2, '3987478', 'Pan de barra con avena', 11.4, 4, 3, 0, '2018-06-03'),
-(3, '3947983', 'PantalÃ³n de mezclilla', 100, 321, 2, 0, '2018-06-03'),
-(4, '9430943', 'Jamon', 50, 62, 4, 1, '2018-06-04');
+INSERT INTO `productos` (`id_producto`, `codigo_producto`, `nombre_producto`, `precio_producto`, `stock`, `id_categoria`, `eliminado`, `fecha_registro`, `id_tienda`) VALUES
+(1, '934898', 'Carne  de res', 100, 140, 1, 0, '2018-06-03', 2),
+(2, '9483', 'Pechuga de res', 100, 10, 1, 1, '2018-06-11', 2),
+(3, '095848', 'Pan', 30, 200, 2, 1, '2018-06-11', 4),
+(4, '3094', 'Pollo', 20, 10, 1, 0, '2018-06-11', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tienda`
+--
+
+CREATE TABLE `tienda` (
+  `id_tienda` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `direccion` varchar(200) NOT NULL,
+  `desactivado` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tienda`
+--
+
+INSERT INTO `tienda` (`id_tienda`, `nombre`, `direccion`, `desactivado`) VALUES
+(1, 'default', 'default', 0),
+(2, 'Wallmart', 'En todo el mundo', 0),
+(4, 'granD', 'todo tamaulipas', 1);
 
 -- --------------------------------------------------------
 
@@ -118,16 +144,19 @@ CREATE TABLE `usuarios` (
   `usuario` varchar(20) NOT NULL,
   `pass` varchar(50) NOT NULL,
   `eliminado` int(11) NOT NULL DEFAULT '0',
-  `fecha_registro` varchar(10) NOT NULL
+  `fecha_registro` varchar(10) NOT NULL,
+  `id_tienda` int(11) NOT NULL,
+  `tipo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `usuario`, `pass`, `eliminado`, `fecha_registro`) VALUES
-(1, 'Yuridia Montelongo Padilla', 'yjonas', '123', 0, '2018-06-02'),
-(2, 'Mario Rodriguez', 'mrdz', 'mario', 0, '2018-06-02');
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `usuario`, `pass`, `eliminado`, `fecha_registro`, `id_tienda`, `tipo`) VALUES
+(6, 'Yuridia Montelongo', 'yjonas', '123', 0, '2018-06-03', 1, 1),
+(7, 'Dulce Montelongo', 'dulce123', 'dulce12', 0, '2018-06-03', 2, 2),
+(9, 'Mario Rodriguez', 'mario', 'mario123', 0, '2018-06-03', 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -137,7 +166,8 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `usuario`, `pass`, `eliminado`, 
 -- Indices de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  ADD PRIMARY KEY (`id_categoria`);
+  ADD PRIMARY KEY (`id_categoria`),
+  ADD KEY `id_tienda` (`id_tienda`);
 
 --
 -- Indices de la tabla `historial`
@@ -145,20 +175,29 @@ ALTER TABLE `categorias`
 ALTER TABLE `historial`
   ADD PRIMARY KEY (`id_historial`),
   ADD KEY `id_producto` (`id_producto`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_tienda` (`id_tienda`);
 
 --
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
   ADD PRIMARY KEY (`id_producto`),
-  ADD KEY `id_categoria` (`id_categoria`);
+  ADD KEY `id_categoria` (`id_categoria`),
+  ADD KEY `id_tienda` (`id_tienda`);
+
+--
+-- Indices de la tabla `tienda`
+--
+ALTER TABLE `tienda`
+  ADD PRIMARY KEY (`id_tienda`);
 
 --
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`);
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD KEY `id_tienda` (`id_tienda`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -168,13 +207,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `historial`
 --
 ALTER TABLE `historial`
-  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -183,27 +222,47 @@ ALTER TABLE `productos`
   MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT de la tabla `tienda`
+--
+ALTER TABLE `tienda`
+  MODIFY `id_tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
+-- Filtros para la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD CONSTRAINT `categorias_ibfk_1` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`);
+
+--
 -- Filtros para la tabla `historial`
 --
 ALTER TABLE `historial`
   ADD CONSTRAINT `historial_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`),
-  ADD CONSTRAINT `historial_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `historial_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
+  ADD CONSTRAINT `historial_ibfk_3` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`);
 
 --
 -- Filtros para la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`);
+  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`),
+  ADD CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`);
+
+--
+-- Filtros para la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_tienda`) REFERENCES `tienda` (`id_tienda`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
