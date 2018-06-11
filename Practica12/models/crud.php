@@ -412,9 +412,9 @@ Class Datos extends Conexion{
 	}
 
 	//Modelo que consulta los datos de una tabla
-	public function consultarVentasModel($idventa){
+	public function consultarVentasModel($idtienda){
 
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM venta WHERE id_venta='$idventa'");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM venta WHERE id_tienda='$idtienda'");
 		//se ejecuta la consulta
 		$stmt->execute();
 		//se retornan todas las filas devueltas
