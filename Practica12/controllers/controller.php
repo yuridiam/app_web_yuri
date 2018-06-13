@@ -1142,7 +1142,7 @@ Class MvcController{
 
 		if($respuesta){
 			foreach ($respuesta as $fila) {
-			  	echo '<option value="'.$fila["id_producto"].'">'.$fila["nombre_producto"]. ", ".$fila["precio_producto"].'</option>';
+			  	echo '<option value="'.$fila["id_producto"].'">'.$fila["nombre_producto"]. ", ".$fila["precio_producto"]. ", " . $fila["stock"] . '</option>';
     		}		 
 		}
 
@@ -1156,22 +1156,35 @@ Class MvcController{
 			$usuario = $_SESSION["id"];
 			$fecha_actual = date('Y-m-d'); 
 			$lista = $_POST["p"];
-			$dat = explode("\n", $lista);
+			$dat = explode("$", $lista);
 			$id_tienda = $_GET["id_tienda"];
+			$time = time();
+			$hora_actual = date("H:i:s",$time);
+			$movimiento = "Venta";
+			$t = $_POST["precio"];
 
-			$r = Datos::crearVentaModel($tienda,$usuario,$fecha_actual,0);
+			$r = Datos::crearVentaModel($tienda,$usuario,$fecha_actual,$t);
 			if($r){
-				for ($i=0; $i <sizeof($dat) ; $i++) { 
+				for ($i=0; $i <sizeof($dat); $i++) { 
 					$dat2 = explode(",", $dat[$i]);
-					$total = (float)$dat2[2] * (float)$dat2[3];
-					$r2 = Datos::agregarPVentaModel($r["id_venta"],$dat2[0],$dat2[3],$total);
-					$t=$t+$total;
+					print_r($dat2);
+					$total = (float)$dat2[2] * (float)$dat2[4];
+					$r2 = Datos::agregarPVentaModel($r["id_venta"],$dat2[0],$dat2[4],$total);
+					//Se guardan en un array
+					$datosController = array ("tienda" => $tienda,
+											"id_producto" => $dat2[0],
+											"id_usuario" => $usuario,
+											"fecha" => $fecha_actual,
+											"hora" => $hora_actual,
+											"nota" => " ",
+											"ref" => " ",
+											"cantidad" => $dat2[4],
+											"mov" => $movimiento);
+
+					Datos::agregarOquitarStockModel($datosController);
 				}
 
-				$resp = Datos::cambiarTotalModel($r["id_venta"],$t);
-				if($resp){
-					echo"<script language='javascript'>window.location='index.php?action=ventas&id_tienda=".$id_tienda."';</script>";
-				}
+				echo"<script language='javascript'>window.location='index.php?action=ventas&id_tienda=".$id_tienda."';</script>";
 
 			}
 			

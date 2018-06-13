@@ -27,9 +27,19 @@
                         <input type="number" class="form-control" name="cant" id="cant" placeholder="Cantidad">
                   </div><br>
                   <button type="button" class="btn btn-block btn-success" name="apro" id="apro" onclick="agP();">Agregar Producto</button><br>
-                  <label id="tit" style="font-size: 1.5em"></label><hr style="margin-top: -10px">
-                  <label id="prod" name="prod"></label><br>
-                  <input type="hidden" name="p" id="p">
+                  <label id="tit" style="font-size: 1.5em">Lista de productos</label><hr style="margin-top: -10px">
+                  <table id="t" name="t" style="width: 100%">
+                    <thead>
+                      <th>Nombre</th>
+                      <th>Unidades</th>
+                      <th>Total</th>
+                    </thead>
+                    <tbody id="b">
+                    </tbody>
+                  </table>
+                  <label id="tit" style="font-size: 1.5em">Total de venta</label>
+                  <input type="text" name="precio" id="precio" readonly>
+                  <input type="text" name="p" id="p">
                   <?php echo "<input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>";?>
                 	<button type="submit" class="btn btn-block btn-outline-success"  name="agregar" id="agregar" onclick="regiP();">Registrar</button>
             	</form>

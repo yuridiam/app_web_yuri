@@ -452,8 +452,23 @@ Class Datos extends Conexion{
 	//Modelo que inserta los datos de una tabla
 	public function agregarPVentaModel($idventa,$idprodu,$uni,$total){
 		$stmt = Conexion::conectar()->prepare("INSERT INTO venta_productos (id_venta,id_producto,unidades,total) VALUES('$idventa','$idprodu','$uni','$total')");
-		print_r($stmt);
-		return $stmt->execute();
+		if($stmt->execute()){
+			$stmt2 = Conexion::conectar()->prepare("SELECT * FROM productos WHERE id_producto='$idprodu'");
+			$stmt2->execute();
+			$p = $stmt2->fetch();
+			$nuevo_stock = $p["stock"] - $uni;
+			if($nuevo_stock<0){
+				return "fail";
+			}else{
+				$stmt3 = Conexion::conectar()->prepare("UPDATE productos SET stock='$nuevo_stock' WHERE id_producto='$idprodu'");
+				$stmt3->execute();
+				return "exito";
+				$stmt3->close();
+			}
+			$stmt2->close();
+		}
+
+		//return $stmt->execute();
 		$stmt->close();
 
 	}

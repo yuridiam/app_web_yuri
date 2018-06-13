@@ -353,6 +353,20 @@
       }
     }
 
+    function verificarV(){
+      var contra = document.getElementById("contra_conf").value;
+      var contra_real = document.getElementById("c_contra").value;
+      if(contra==contra_real){
+        $("#agregar").click();
+        swal("Listo", "Operación exitosa", "success");
+      }else{
+        swal({
+          title: "<h6 style='color: gray'>Contraseña incorrecta</h6>",
+          html: true,
+        });
+      }
+    }
+
     function agregarS(){
 
       var ca = document.getElementById("cantidad").value;
@@ -450,21 +464,32 @@
     var cont = 0;
     var lista="";
     var lista2="";
+    var precio_total=0;
 
     function agP(){
-      var titulo = document.getElementById("tit");
-      var produs = document.getElementById("prod");
       var can = document.getElementById("cant").value;
       var pr = document.getElementById("p");
+      var ppp = document.getElementById("precio");
       if(cont==0){
         if(can != ''){
-           titulo.innerHTML="Lista de compra";
            var id = $("#productos").val();
            var nombre = $("#productos option:selected").html();
-           lista = lista + id + " , " + nombre + " , " + can + "<br/>";
-           lista2 = lista2 + id + " , " + nombre + " , " + can;
-           pr.value=lista2;
-           cont++;
+           var stock = nombre.split(",");
+           if(parseInt(stock[2])<parseInt(can)){
+              swal("Error", "Stock Insuficiente", "error");
+              event.preventDefault();
+           }else{
+               lista2 = lista2 + id + " , " + nombre + " , " + can + "$";
+               pr.value=lista2;
+               cont++;
+               var precio = nombre.split(",");
+               var mult = parseFloat(precio[1]) * parseInt(can);
+               precio_total = precio_total + mult;
+               ppp.value=precio_total;
+               fila="<tr><td>"+precio[0]+"</td><td>"+can+"</td><td>"+mult+"</td></tr>";
+               document.getElementById("t").insertRow(-1).innerHTML=fila;
+           }
+
         }else{
           swal("Error", "Ingrese una cantidad", "error");
           event.preventDefault();
@@ -474,28 +499,42 @@
         if(can != ''){
           var id = $("#productos").val();
           var nombre = $("#productos option:selected").html();
-          lista = lista + id + " , " + nombre + " , " + can + "<br/>";
-          lista2 = lista2 + id + " , " + nombre + " , " + can;
-          pr.value=lista2;
-          cont++;
+          var stock = nombre.split(",");
+          if(parseInt(stock[2])<parseInt(can)){
+              swal("Error", "Stock Insuficiente", "error");
+              event.preventDefault();
+          }else{
+              lista2 = lista2 + id + " , " + nombre + " , " + can;
+              pr.value=lista2;
+              cont++;
+              var precio = nombre.split(",");
+              var mult = parseFloat(precio[1]) * parseInt(can);
+              precio_total = precio_total + mult;
+              ppp.value=precio_total;
+              fila="<tr><td>"+precio[0]+"</td><td>"+can+"</td><td>"+mult+"</td></tr>";
+              document.getElementById("t").insertRow(-1).innerHTML=fila;
+          }
         }else{
           swal("Error", "Ingrese una cantidad", "error");
           event.preventDefault();
         }
       }
-      produs.innerHTML=lista;
     }
 
     function regiP(){
       event.preventDefault();
-     
-      swal({
-      title: "<h5 style='color: gray'>Confirme la venta</h5>",
-      text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-success' value='Aceptar' id='aceptar' onclick='verificarS();'>",
-      html: true,
-      showCancelButton: false,
-      showConfirmButton: false,
-    });
+
+      if(lista2===''){
+        swal("Error", "Ingrese al menos un producto", "error");
+      }else{
+           swal({
+              title: "<h5 style='color: gray'>Confirme la venta</h5>",
+              text: "<input type='password' class='form-control' id='contra_conf' placeholder='Contraseña' autofocus><input type='button' class='btn btn-block btn-outline-success' value='Aceptar' id='aceptar' onclick='verificarV();'>",
+              html: true,
+              showCancelButton: false,
+              showConfirmButton: false,
+            });
+      }
       
     }
 
