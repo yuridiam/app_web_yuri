@@ -467,7 +467,6 @@ Class Datos extends Conexion{
 			}
 			$stmt2->close();
 		}
-
 		//return $stmt->execute();
 		$stmt->close();
 

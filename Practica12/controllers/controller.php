@@ -1165,9 +1165,9 @@ Class MvcController{
 
 			$r = Datos::crearVentaModel($tienda,$usuario,$fecha_actual,$t);
 			if($r){
-				for ($i=0; $i <sizeof($dat); $i++) { 
+
+				for ($i=0; $i <sizeof($dat)-1; $i++) { 
 					$dat2 = explode(",", $dat[$i]);
-					print_r($dat2);
 					$total = (float)$dat2[2] * (float)$dat2[4];
 					$r2 = Datos::agregarPVentaModel($r["id_venta"],$dat2[0],$dat2[4],$total);
 					//Se guardan en un array
@@ -1183,7 +1183,7 @@ Class MvcController{
 
 					Datos::agregarOquitarStockModel($datosController);
 				}
-
+				
 				echo"<script language='javascript'>window.location='index.php?action=ventas&id_tienda=".$id_tienda."';</script>";
 
 			}

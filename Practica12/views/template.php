@@ -504,7 +504,7 @@
               swal("Error", "Stock Insuficiente", "error");
               event.preventDefault();
           }else{
-              lista2 = lista2 + id + " , " + nombre + " , " + can;
+              lista2 = lista2 + id + " , " + nombre + " , " + can + "$";
               pr.value=lista2;
               cont++;
               var precio = nombre.split(",");

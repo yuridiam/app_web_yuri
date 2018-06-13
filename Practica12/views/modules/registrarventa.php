@@ -39,7 +39,7 @@
                   </table>
                   <label id="tit" style="font-size: 1.5em">Total de venta</label>
                   <input type="text" name="precio" id="precio" readonly>
-                  <input type="text" name="p" id="p">
+                  <input type="hidden" name="p" id="p">
                   <?php echo "<input type='hidden' class='form-control' id='c_contra' value='". $_SESSION["contra"] ."'>";?>
                 	<button type="submit" class="btn btn-block btn-outline-success"  name="agregar" id="agregar" onclick="regiP();">Registrar</button>
             	</form>
