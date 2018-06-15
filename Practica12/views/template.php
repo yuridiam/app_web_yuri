@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="views/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="views/plugins/select2/select2.min.css">
     <link rel="stylesheet" href="views/dist/sweetalert.css">
+    <link rel="stylesheet" href="views/css/buttons.dataTables.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   </head>
@@ -95,18 +96,22 @@
 <script src="views/plugins/datatables/jquery.dataTables.js"></script>
 <script src="views/plugins/datatables/dataTables.bootstrap4.js"></script>
 <script src="views/plugins/select2/select2.full.min.js"></script>
+<script src="views/dist/buttons.flash.min.js"></script>
+<script src="views/dist/buttons.html5.min.js"></script>
+<script src="views/dist/buttons.print.min.js"></script>
+<script src="views/dist/dataTables.buttons.min.js"></script>
+<script src="views/dist/jszip.min.js"></script>
+<script src="views/dist/pdfmake.min.js"></script>
+<script src="views/dist/vfs_fonts.js"></script>
 <script>
-  $(function () {
-    $("#example1").DataTable();
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false
-    });
-  });
+  $(document).ready(function() {
+    $('#example1').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
 </script>
 <script>
   $(function () {
