@@ -1,0 +1,39 @@
+ul.u {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #853BBE;
+}
+
+li.i {
+    float: right;
+}
+
+li a.a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li a:hover.ah {
+    background-color: #61268F;
+    color: white;
+}
+
+#content {
+margin: 0 auto;
+position: relative;
+}
+
+#izquierda{
+width:360px;
+float: left;
+}
+
+#derecha{
+width:360px;
+float: right;
+}
