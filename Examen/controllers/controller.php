@@ -392,6 +392,7 @@ Class MvcController{
 	public function registrarPagoController(){
 		//Se comprueba que el boton acepta se haya seleccionado
 		if(isset($_POST["aceptar"])){
+			$fecha_hora = date("d-m-Y H:i:s");
 			//Se ejecuta las condiciones que comprueban la imagen que se cargo
 			$b=0;
 			$ruta="";
