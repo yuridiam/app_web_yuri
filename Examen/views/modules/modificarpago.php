@@ -8,22 +8,27 @@ if(!$_SESSION["validar"]){
 	exit();
 }
 
+//Ejecucion de controladores
+$cargarA = new MvcController();
+$alumnas = $cargarA->cargarAluController();
+
 ?>
 
 <div style="margin-left: 300px">
 <form method="post" class="form-control" style="width: 70%">
-	<h3 align="center">Modificar <b> Alumna</h3>
+	<h3 align="center">Modificar <b> Pago</h3>
 	<br><br>
 	<?php
 		//Ejecucion de controladores
-		$editarG = new MvcController();
-		$editarG->editarAlumnaController();
+		$editarP = new MvcController();
+		$editarP->editarPagoController();
 	?>
 </form>
+<input type="hidden" name="alu" id="alu" value="<?php echo $alumnas ?>">
 </div>
 
 <?php
 		//Ejecucion de controladores
-		$modificarG = new MvcController();
-		$modificarG->modificarAlumnaController();
+		$modificarP = new MvcController();
+		$modificarP->modificarPagoController();
 ?>

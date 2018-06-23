@@ -1,13 +1,11 @@
 <?php
-
+//Se inicia la sesion
 session_start();
-
+//Se valida que la sesion este iniciada
 if(!$_SESSION["validar"]){
-
+	//Si no se inicia la sesion se dirige al login
 	header("location:index.php?action=ingresar");
-
 	exit();
-
 }
 
 ?>
@@ -29,7 +27,16 @@ if(!$_SESSION["validar"]){
 		<th></th>
 	</thead>
 	<tbody>
-		
+		<?php
+			$vistaPagos = new MvcController();
+			$vistaPagos->vistaPagosController();
+		?>
 	</tbody>
 </table>
 </div>
+
+<?php
+	$eliminarP = new MvcController();
+	$eliminarP->eliminarPagoController();
+
+?>

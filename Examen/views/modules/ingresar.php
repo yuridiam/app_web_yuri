@@ -23,9 +23,9 @@
 	$ingreso -> ingresoUsuarioController();
 	//Se valida el action
 	if(isset($_GET["action"])){
-
+		//Si el usuario ingreso datos incorrectos el action se convierte a fallo
 		if($_GET["action"] == "fallo"){
-
+			//se manda un alert donde avisa que no se pudo inciar sesion
 			echo "<script type='text/javascript'>
         					alert('Datos incorrectos');
       				  </script>";

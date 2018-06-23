@@ -23,17 +23,17 @@ li a:hover.ah {
     color: white;
 }
 
-#content {
+#contenido {
 margin: 0 auto;
 position: relative;
 }
 
 #izquierda{
-width:360px;
+width:200px;
 float: left;
 }
 
 #derecha{
-width:360px;
+width:200px;
 float: right;
 }
