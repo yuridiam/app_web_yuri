@@ -17,7 +17,7 @@
 		?>
 	</select>
 	<label>Alumna</label>
-	<select class="js-example-basic-single" name="alumna" id="alumna" style="width: 100%" hidden="true">
+	<select class="js-example-basic-single" name="alumna" id="alumna" style="width: 100%">
 	</select>
 	<br><br>
 	<label>Nombre de la madre</label>
