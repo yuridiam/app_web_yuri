@@ -36,12 +36,17 @@ Class MvcController{
 										"contra" => $_POST["contra"]);
 			//Se manda a llamar el modelo que identifica si los datos que ingreso el usuario estan almacenados en la base de datos
 			$respuesta = Datos::ingresoUsuarioModel($datosController, "maestro");
+      
+      
+      
+			echo "<script>alert($respuesta);</script>";
 			//Si los datos son encontrados en el modelo se inicia la sesion
 			if($respuesta!="error"){
 				//se inicia la sesion
-				session_start();
 				$_SESSION["validar"] = true;
 				$_SESSION["usuario"] = $datosController["usuario"];
+				$_SESSION["password"] = $datosController["contra"];
+        //$_SESSION["id"] = $respuesa[0]["id_maestro"];
 				//superadmin
 				if($respuesta==1){
 					header("location:index.php?action=inicioadmin");
@@ -52,11 +57,11 @@ Class MvcController{
 				}
 
 			}else{
-				//Si los datos no son correctos se dirige al login de nuevo
-				header("location:index.php?action=fallo");
-				echo "<script type='text/javascript'>
-        					alert('Datos incorrectos');
-      				  </script>";
+				echo '<script>
+						swal({title: "Error", 
+							  text: "Usuario o contraseña erróneos!", 
+							  type: "error"});
+					 </script>';
 			}
 
 		}
@@ -72,12 +77,19 @@ Class MvcController{
 			//Si la imagen se cargo se almacenan los datos que se ingresaron
 			if($b!="0"){
 
-				$datosController = array ("matricula"=>$_POST["matricula"], "nombre"=>$_POST["nombre"], "grupo"=>$_POST["grupo"], "carrera"=>$_POST["carrera"], "foto"=>$b);
+				$datosController = array ("matricula"=>$_POST["matricula"], "nombre"=>$_POST["nombre"], "carrera"=>$_POST["carrera"], "foto"=>$b);
 
 				$respuesta = Datos::registrarAlumnoModel($datosController, "alumno");
 				if($respuesta){
 					$_SESSION["registrado"]=1;
 					echo"<script language='javascript'>window.location='index.php?action=nuevoalumno';</script>";
+				}
+				else{
+					echo '<script>
+						swal({title: "Error", 
+							  text: "Esta matricula ya existe!", 
+							  type: "error"});
+					 </script>';
 				}
 
 
@@ -85,6 +97,24 @@ Class MvcController{
 		}
 	}
 
+
+	public function mostrarAlumnosGrupoController(){
+		if(isset($_GET['id']))
+		{
+			$datosController = $_GET["id"];
+			$respuesta = Datos::consultarGruposAlumnoModel($datosController);
+			if($respuesta){
+			foreach ($respuesta as $fila) {
+				echo '<tr>
+						<td>'.$fila["matricula_alumno"].'</td>
+						<td>'.$fila["nombre_alumno"] . '</td>
+						<td><button class="btn btn-danger"><a onclick="confirmarDelete('.$fila["id_alumno"].');" href="index.php?action=agregar_alumno&id='.$datosController.'&idBorrar='.$fila["id_alumno"].'" id="btn'.$fila["id_alumno"].'"style="color: white"><i class="fa fa-times"></i></a></button></td>
+					</tr>';
+			}
+		}
+
+		}
+	}
 	//Este metodo hace una llamada a un modelo que obtiene todos los grupos de la base de datos existentes de manera lógica
 	public function mostrarGruposController(){
 		$respuesta = Datos::consultarGruposModel();
@@ -96,6 +126,12 @@ Class MvcController{
 		}
 	}
 
+	public function getUnitByDateController(){
+		$datosController =  date("Y-m-d");
+		$respuesta = Datos::getUnitByDateModel($datosController);
+		echo '<input type="text" class="form-control" id="unidad" name="unidad" required readonly value="'.$respuesta[0].'">';
+
+	}
 	//Este metodo hace una llamada a un modelo que obtiene todos los alumnos de la base de datos existentes de manera lógica
 	public function mostrarAlumnoController(){
 		$respuesta = Datos::consultarAlumnoModel();
@@ -115,7 +151,13 @@ Class MvcController{
 			}
 		}
 	}
-
+  public function reiniciarController(){
+    if(isset($_GET['reiniciar'])){
+      if($_GET['reiniciar'] == 1){
+        $respuesta = Datos::reiniciarModel();
+      }
+    }
+  }
 	//Este metodo hace una llamada a un modelo que obtiene todos las carreras de la base de datos existentes de manera lógica
 	public function mostrarCarrerasController(){
 		$respuesta = Datos::consultarCarrerasModel();
@@ -132,15 +174,12 @@ Class MvcController{
 		$respuesta = Datos::consultarAlumnosModel();
 		if($respuesta){
 			foreach ($respuesta as $fila) {
-				$grupo = Datos::buscarGrupoModel($fila["id_grupo"]);
-				$grupo2 = $grupo["codigo_grupo"];
 				$carrera = Datos::buscarCarreraModel($fila["id_carrera"]);
 				$carrera2 = $carrera["siglas"];
 				
 				echo '<tr>
 						<td>'.$fila["matricula_alumno"].'</td>
 						<td>'.$fila["nombre_alumno"] . '</td>
-						<td>'.$grupo2.'</td>
 						<td>'.$carrera2.'</td>';
 
 						if($fila["img_alumno"]!=""){
@@ -150,7 +189,7 @@ Class MvcController{
 						}
 
 						echo '<td><a href="index.php?action=modificaralumno&id='.$fila["id_alumno"].'"class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
-						<td><button class="btn btn-danger"><a href="index.php?action=alumnos&idBorrar='.$fila["id_alumno"]. '" style="color: white" onclick="verificar('.$fila["id_alumno"].');"><i class="fa fa-times"></i></a></button></td>
+						<td><button class="btn btn-danger"><a onclick="confirmarDelete('.$fila["id_alumno"].');" href="index.php?action=alumnos&idBorrar='.$fila["id_alumno"].'" id="btn'.$fila["id_alumno"].'" style="color: white"><i class="fa fa-times"></i></a></button></td>
 					</tr>';
 			}
 		}
@@ -176,24 +215,6 @@ Class MvcController{
 		            </div>
 		          </div>
 		          <div class='form-row'>
-		            <div class='form-group col-md-6'>
-		              <label for='grupo'>Grupo</label>
-		              <select id='grupo' name='grupo' class='form-control select2'>";
-
-		              $g = Datos::consultarGruposModel();
-						if($g){
-							foreach ($g as $fila) {
-								$resp2 = Datos::buscarProfesorModel($fila["id_maestro"]);
-								if($respuesta["id_grupo"]==$fila["id_grupo"]){
-									echo '<option value="'.$fila["id_grupo"].'" selected>'.$fila["codigo_grupo"] . " - ". $resp2["nombre_maestro"] . " (Nivel " . $fila["nivel"]. ")" . '</option>';
-								}else{
-									echo '<option value="'.$fila["id_grupo"].'">'.$fila["codigo_grupo"] . " - ". $resp2["nombre_maestro"] . " (Nivel " . $fila["nivel"]. ")" . '</option>';
-								}
-							}
-						}
-		                
-		             echo "</select>
-		            </div>
 		            <div class='form-group col-md-6'>
 		              <label for='carrera'>Carrera</label>
 		              <select id='carrera' name='carrera' class='form-control select2'>";
@@ -239,7 +260,7 @@ Class MvcController{
 
 			if(isset($b)){
 
-				$datosController = array ("id"=>$id,"matricula"=>$_POST["matricula"], "nombre"=>$_POST["nombre"], "grupo"=>$_POST["grupo"], "carrera"=>$_POST["carrera"], "foto"=>$b);
+				$datosController = array ("id"=>$id,"matricula"=>$_POST["matricula"], "nombre"=>$_POST["nombre"],  "carrera"=>$_POST["carrera"], "foto"=>$b);
 
 				$respuesta = Datos::modificarAlumnoModel($datosController, "alumno");
 				if($respuesta){
@@ -255,8 +276,8 @@ Class MvcController{
 
 	//Metodo que cambia el estado de un registro para eliminarlo logicamente de la base de datos
 	public function eliminarAlumnoController(){
-		if(isset($_GET["borrar"])){
-			$id = $_GET["borrar"];
+		if(isset($_GET["idBorrar"])){
+			$id = $_GET["idBorrar"];
 			$respuesta = Datos::eliminarAlumnoModel($id);
 
 			if($respuesta){
@@ -278,6 +299,12 @@ Class MvcController{
 				if($respuesta){
 					$_SESSION["registrado"]=1;
 					echo"<script language='javascript'>window.location='index.php?action=nuevoprofe';</script>";
+				}else{
+					echo '<script>
+						swal({title: "Error", 
+							  text: "Esta numero de empleado ya existe!", 
+							  type: "error"});
+					 </script>';
 				}
 
 
@@ -306,7 +333,7 @@ Class MvcController{
 						echo '<td>'.$fila["usuario"].'</td>
 						<td>'.$fila["pass"].'</td>
 						<td><a href="index.php?action=modificarprofe&id='.$fila["id_maestro"].'"class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
-						<td><button class="btn btn-danger"><a href="index.php?action=profesores&idBorrar='.$fila["id_maestro"].'" style="color: white" onclick="verificarP('.$fila["id_maestro"].');"><i class="fa fa-times"></i></a></button></td>
+						<td><a class="btn btn-danger" onclick="confirmarDelete('.$fila["id_maestro"].');" href="index.php?action=profesores&idBorrar='.$fila["id_maestro"].'" id="btn'.$fila["id_maestro"].'"><i class="fa fa-times"></i></a></td>
 					</tr>';
 			}
 		}
@@ -399,8 +426,8 @@ Class MvcController{
 
 	//Metodo que cambia el estado de un registro para eliminarlo logicamente de la base de datos
 	public function eliminarProfesorController(){
-		if(isset($_GET["borrar"])){
-			$id = $_GET["borrar"];
+		if(isset($_GET["idBorrar"])){
+			$id = $_GET["idBorrar"];
 			$respuesta = Datos::eliminarProfesorModel($id);
 			if($respuesta){
 				$_SESSION["eliminado"]=1;
@@ -413,7 +440,9 @@ Class MvcController{
 	public function registrarActividadController(){
 		if(isset($_POST["registrar"])){
 			
-			$datosController = array ("nombre"=>$_POST["nombre"], "desc"=>$_POST["desc"]);
+			$datosController = array ("nombre"=>$_POST["nombre"], 
+									  "desc"=>$_POST["desc"],
+									  "lugares"=>$_POST["lugares"]);
 
 			$respuesta = Datos::registrarActividadModel($datosController, "actividad");
 			if($respuesta){
@@ -424,6 +453,93 @@ Class MvcController{
 		}
 	}
 
+	public function registrarSesionController(){
+		if(isset($_POST["registrar"]) && $_POST['alumno']!="" && $_POST['maestro']!=""){
+			
+			$datosController = array ("alumno"=>$_POST["alumno"], 
+									  "maestro"=>$_POST["maestro"],
+									  "actividad"=>$_POST['act'],
+									  "fecha"=>$_POST['fecha'],
+									  "entrada"=>$_POST['entrada'],
+									  "unidad"=>$_POST['unidad']);
+			$respuesta = Datos::registrarSesionModel($datosController, "sesion");
+			if($respuesta){
+				$_SESSION["registrado"]=1;
+				echo"<script language='javascript'>window.location='index.php?action=nuevasesion';</script>";
+			}
+
+		}
+	}
+
+	public function vistaSesionesActivasController(){
+		$respuesta = Datos::consultarSesionActivaModel();
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				echo '<tr>
+						<td>'.$fila["nombre_alumno"].'</td>
+						<td>'.$fila["nombre_actividad"].'</td>
+						<td>'.$fila["nombre_maestro"].'</td>
+						<td>'.$fila["fecha"].'</td>
+						<td id="hora">'.$fila["hora_entrada"].'</td>
+						<td>'.$fila["unidad"].'</td>
+						<td><button class="btn btn-success"><a onclick="confirmarSalida('.$fila["id_alumno"].');" href="index.php?action=sesiones&idLiberar='.$fila["id_alumno"].'" id="btn'.$fila["id_alumno"].'"style="color: white">Liberar</a></button></td>
+					</tr>';
+			}
+		}
+	}
+
+	public function liberarAlumnoController(){
+		if(isset($_GET["idLiberar"])){
+			$datosController = $_GET['idLiberar'];
+			$respuesta = Datos::consultarSesionAlumnoModel($datosController);
+
+			$max = array(60,120,180,240,300,360,420);
+
+			$oldHour = explode(":", $respuesta["hora_entrada"]);
+			$newHour = $oldHour[0].":00";
+      
+      // NOOOOOOOOOOOOOOOOOOW - - - - date('H:i', strtotime('-5 hour'))
+			$now = date('H:i', strtotime('-5 hour'));
+
+			$minutes = abs(strtotime($newHour) - strtotime($now)) / 60;
+
+			$valMax = 10000;
+			for($i = 0; $i<count($max); $i++){
+				$op = $max[$i] - $minutes;
+				if($op < $valMax && $op>-1){
+					$valMax = $max[$i] - $minutes;
+					$hora = $i+1;
+				}
+			}
+
+			if($max[$hora-1] - $minutes > 10){
+				$hora--;
+				
+			}
+
+			if($hora > 0 && $hora < 4){
+				$datosController = array("id_alumno"=>$respuesta["id_alumno"],
+										 "id_actividad"=>$respuesta["id_actividad"],
+										 "id_maestro"=>$respuesta["id_maestro"],
+										 "fecha"=>$respuesta["fecha"],
+										 "hora_entrada"=>$respuesta["hora_entrada"],
+										 "hora_salida"=>$now,
+										 "horas"=>$hora,
+										 "unidad"=>$respuesta["unidad"]);
+				$respuesta2 = Datos::registrarSesionDeAlumno($datosController,"entrada");
+			}
+      else{
+        $datosController = $respuesta["id_alumno"];
+        $respuesta2 = Datos::limpiarAlumnoDeSesion($datosController,"sesion");
+          
+        }
+      $datosController = $respuesta["id_actividad"];
+      $respuesta3 = Datos::reponerActividad($datosController,"actividad");
+      echo"<script language='javascript'>window.location='index.php?action=sesiones';</script>";
+      }
+      
+		}
+	
 	//Metodo que obtiene todos los registros de la base de datos y los imprime en una tabla
 	public function vistaActividadController(){
 		$respuesta = Datos::consultarActividadModel();
@@ -433,7 +549,7 @@ Class MvcController{
 						<td>'.$fila["nombre_actividad"].'</td>
 						<td>'.$fila["desc_actividad"] . '</td>
 						<td><a href="index.php?action=modificaractividad&id='.$fila["id_actividad"].'"class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
-						<td><button class="btn btn-danger"><a href="index.php?action=actividades&idBorrar='.$fila["id_actividad"].'" style="color: white" onclick="verificarA('.$fila["id_actividad"].');"><i class="fa fa-times"></i></a></button></td>
+						<td><button class="btn btn-danger"><a onclick="confirmarDelete('.$fila["id_actividad"].');" href="index.php?action=actividades&idBorrar='.$fila["id_actividad"].'" id="btn'.$fila["id_actividad"].'"style="color: white"><i class="fa fa-times"></i></a></button></td>
 					</tr>';
 			}
 		}
@@ -457,6 +573,10 @@ Class MvcController{
 			              <label for="desc">Descripción</label>
 			              <input type="text" class="form-control" id="desc" name="desc" value="'.$respuesta["desc_actividad"].'" placeholder="Descripción de la actividad" required>
 			            </div>
+			            <div class="form-group col-md-3">
+              				<label for="nombre">Lugares</label>
+              				<input type="number" value="'.$respuesta["lugares"].'" max="30" min="1" class="form-control" id="lugares" name="lugares" required>
+            			</div>
 			          </div>';
 			}
 		}
@@ -466,7 +586,7 @@ Class MvcController{
 	public function modificarActividadController(){
 		$id = $_GET["id"];
 		if(isset($_POST["modificar"])){
-			$datosController = array ("id"=>$id,"nombre"=>$_POST["nombre"], "desc"=>$_POST["desc"]);
+			$datosController = array ("id"=>$id,"nombre"=>$_POST["nombre"], "desc"=>$_POST["desc"] , "lugares"=>$_POST["lugares"]);
 
 			$respuesta = Datos::modificarActividadModel($datosController, "actividad");
 			if($respuesta){
@@ -478,12 +598,25 @@ Class MvcController{
 
 	//Metodo que cambia el estado de un registro para eliminarlo logicamente de la base de datos
 	public function eliminarActividadController(){
-		if(isset($_GET["borrar"])){
-			$id = $_GET["borrar"];
+		if(isset($_GET["idBorrar"])){
+			$id = $_GET["idBorrar"];
 			$respuesta = Datos::eliminarActividadModel($id);
 			if($respuesta){
 				$_SESSION["eliminado"]=1;
 				echo"<script language='javascript'>window.location='index.php?action=actividades';</script>";
+			}
+		}
+	}
+
+	public function eliminarAlumnoGrupoController(){
+
+		if(isset($_GET["idBorrar"])){
+			$id = $_GET["idBorrar"];
+			$idGrupo = $_GET["id"];
+			$respuesta = Datos::eliminarAlumnoGrupoModel($id);
+			if($respuesta){
+				$_SESSION["eliminado"]=1;
+				echo"<script language='javascript'>window.location='index.php?action=agregar_alumno&id=$idGrupo';</script>";
 			}
 		}
 	}
@@ -498,8 +631,11 @@ Class MvcController{
 		}
 	}
 
+
 	//Metodo que registra un grupo en la base de datos con la llmada a un modelo que realiza la insercion en la base de datos
 	public function registrarGrupoController(){
+
+
 		if(isset($_POST["registrar"])){
 			
 			$datosController = array ("codigo"=>$_POST["codigo"], "maestro"=>$_POST["maestro"], "nivel"=>$_POST["nivel"]);
@@ -524,7 +660,8 @@ Class MvcController{
 						<td>'.$resp2["nombre_maestro"] . '</td>
 						<td>'.$fila["nivel"] . '</td>
 						<td><a href="index.php?action=modificargrupo&id='.$fila["id_grupo"].'"class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
-						<td><button class="btn btn-danger"><a href="index.php?action=grupos&idBorrar='.$fila["id_grupo"].'" style="color: white" onclick="verificarG('.$fila["id_grupo"].');"><i class="fa fa-times"></i></a></button></td>
+						<td><a href="index.php?action=agregar_alumno&id='.$fila["id_grupo"].'"class="btn btn-primary"><i class="fa fa-user-plus"></i></a></td>
+						<td><button class="btn btn-danger"><a onclick="confirmarDelete('.$fila["id_grupo"].');" href="index.php?action=grupos&idBorrar='.$fila["id_grupo"].'" id="btn'.$fila["id_grupo"].'" style="color: white"><i class="fa fa-times"></i></a></button></td>
 					</tr>';
 			}
 		}
@@ -646,8 +783,8 @@ Class MvcController{
 
 	//Metodo que cambia el estado de un registro para eliminarlo logicamente de la base de datos
 	public function eliminarGrupoController(){
-		if(isset($_GET["borrar"])){
-			$id = $_GET["borrar"];
+		if(isset($_GET["idBorrar"])){
+			$id = $_GET["idBorrar"];
 			$respuesta = Datos::eliminarGrupoModel($id);
 			if($respuesta){
 				$_SESSION["eliminado"]=1;
@@ -671,6 +808,43 @@ Class MvcController{
 	public function numeroGrupos(){
 		$num = Datos::totalesModel("grupo");
 		return $num;
+	}
+  
+  public function vistaInicioController(){
+    
+    $respuesta2 = Datos::consultarIdMaestroModel($_SESSION["usuario"]);
+    
+    $id_maestro_session = $respuesta2[0]["id_maestro"];
+    
+		$respuesta = Datos::consultarHorasModel($id_maestro_session);
+    
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				echo '<tr>
+						<td>'.$fila["matricula_alumno"].'</td>
+						<td>'.$fila["nombre_alumno"] . '</td>
+						<td>'.$fila["unidad"] . '</td>
+            <td>'.$fila["total"] . '</td>
+					</tr>';
+			}
+		}
+	}
+  
+  public function vistaReporteController(){
+   
+		$respuesta = Datos::consultarReporteModel();
+    
+    
+		if($respuesta){
+			foreach ($respuesta as $fila) {
+				echo '<tr>
+						<td>'.$fila["matricula_alumno"].'</td>
+						<td>'.$fila["nombre_alumno"] . '</td>
+						<td>'.$fila["unidad"] . '</td>
+            <td>'.$fila["total"] . '</td>
+					</tr>';
+			}
+		}
 	}
 
 

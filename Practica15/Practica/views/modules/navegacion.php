@@ -37,14 +37,14 @@
         <a class="nav-link" href="index.php?action=sesiones" style="margin-left: 10px">Sesiones</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=reportes" style="margin-left: 10px">Reportes</a>
+        <a class="nav-link" href="index.php?action=reportes" style="margin-left: 10px">Reporte</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <?php echo $usuario; ?>
+          Bienvenido, <?php echo $usuario; ?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="index.php?action=salir">Cerrar Sesión</a>
+          <a class="dropdown-item" onclick="confirmarSesion();">Cerrar Sesión</a>
         </div>
       </li>
     </ul>

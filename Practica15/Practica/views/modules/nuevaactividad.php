@@ -28,9 +28,13 @@
               <label for="nombre">Nombre de la actividad</label>
               <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la actividad" required>
             </div>
-            <div class="form-group col-md-9">
+            <div class="form-group col-md-6">
               <label for="desc">Descripción</label>
               <input type="text" class="form-control" id="desc" name="desc" placeholder="Descripción de la actividad" required>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="nombre">Lugares</label>
+              <input type="number" max="30" min="1" class="form-control" id="lugares" name="lugares" required>
             </div>
           </div>
           <button type="submit" id="registrar" name="registrar" style="width: 100%" class="btn btn-primary">Registrar</button>

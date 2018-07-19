@@ -29,7 +29,7 @@
             $editarAct->editarActividadController();
 
           ?>
-          <button type="submit" id="modificar" name="modificar" style="width: 100%" class="btn btn-primary">Modificar</button>
+          <button type="submit" onclick="confirmarUpdate();" id="btn" name="modificar" style="width: 100%" class="btn btn-primary">Modificar</button>
         </form>
 			<br><br><br><br><br><br><br>
 		</div>

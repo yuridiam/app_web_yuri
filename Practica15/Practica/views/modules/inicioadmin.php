@@ -48,8 +48,8 @@
   				  		<img class="card-img-top" style="height: 140px; width: 800px" src="views/bg2.jpg" alt="Card image cap">
 				  		<div class="card-body">
 				    		<h5 class="card-title">¿Qué es CAI?</h5>
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				    		<a href="#" class="btn btn-primary" style="background-color: #0087FF">Ver más</a>
+				    		<p class="card-text">Centro de Aprendizaje de Inglés de la Universidad Politécnica de Victoria.</p>
+				    		<a href="#" onclick="verCAI();" class="btn btn-primary" style="background-color: #0087FF">Ver más</a>
 				  		</div>
   					</div>
   				</div>
@@ -58,8 +58,8 @@
   				  		<img class="card-img-top" style="height: 140px; width: 800px" src="views/bg3.jpg" alt="Card image cap">
 				  		<div class="card-body">
 				    		<h5 class="card-title">Objetivo del sitio</h5>
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				    		<a href="#" class="btn btn-primary" style="background-color: #0087FF">Ver más</a>
+				    		<p class="card-text">El principal objetivo es centralizar las actividades de los alumnos en CAI.</p>
+				    		<a href="#" onclick="verob();" class="btn btn-primary" style="background-color: #0087FF">Ver más</a>
 				  		</div>
   					</div>
   				</div>
@@ -68,8 +68,8 @@
   				  		<img class="card-img-top" style="height: 140px; width: 600px" src="views/bg6.jpg" alt="Card image cap">
 				  		<div class="card-body">
 				    		<h5 class="card-title">Soporte</h5>
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				    		<a href="#" class="btn btn-primary" style="background-color: #0087FF">Ver más</a>
+				    		<p class="card-text">¿Tienes alguna duda sobre el sistema? Contáctanos.</p>
+				    		 <button onclick="versp();" id="ver" type="button" class="btn btn-primary">Ver más</button>
 				  		</div>
   					</div>
   				</div>

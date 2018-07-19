@@ -26,7 +26,7 @@
           <div class="form-row">
             <div class="form-group col-md-3">
               <label for="noempleado">Número de Empleado</label>
-              <input type="text" class="form-control" id="noempleado" name="noempleado" placeholder="Número de empleado" required>
+              <input maxlength="7" type="text" class="form-control" id="noempleado" name="noempleado" placeholder="Número de empleado" required>
             </div>
             <div class="form-group col-md-9">
               <label for="nombre">Nombre</label>

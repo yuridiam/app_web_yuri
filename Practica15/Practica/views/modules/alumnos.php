@@ -33,7 +33,6 @@
                 <tr>
                   <th>Matrícula</th>
                   <th>Nombre</th>
-                  <th>Grupo</th>
                   <th>Carrera</th>
                   <th></th>
                   <th></th>

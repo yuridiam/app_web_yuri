@@ -10,7 +10,7 @@
         if(isset($_SESSION["registrado"])){
           if($_SESSION["registrado"]==1){
             echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-                Grupo Registrado Exitósamente. <a href='index.php?action=nuevoalumno' style='font-size: 1.1em'>¿Desea agregar alumnos a este grupo? De click aquí.</a>
+                Grupo Registrado Exitósamente.
                 <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
                   <span aria-hidden='true'>&times;</span>
                 </button>
@@ -28,9 +28,7 @@
               <label for="codigo">Código del grupo</label>
               <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código del grupo" required>
             </div>
-          </div>
-          <div class="form-row">
-           <div class="form-group col-md-5">
+           <div class="form-group col-md-7">
               <label for="maestro">Maestro</label>
               <select id="maestro" name="maestro" class="form-control select2">
                 <?php
@@ -62,5 +60,5 @@
 </div>
 <?php
     $regGrupo = new MvcController();
-    //$regGrupo->registrarGrupoController();
+    $regGrupo->registrarGrupoController();
 ?>

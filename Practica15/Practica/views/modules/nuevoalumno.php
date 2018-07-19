@@ -26,7 +26,7 @@
           <div class="form-row">
             <div class="form-group col-md-3">
               <label for="matricula">Matrícula</label>
-              <input type="text" class="form-control" id="matricula" name="matricula" placeholder="Matrícula" required>
+              <input maxlength="7" type="text" class="form-control" id="matricula" name="matricula" placeholder="Matrícula" required>
             </div>
             <div class="form-group col-md-9">
               <label for="nombre">Nombre</label>
@@ -34,15 +34,6 @@
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="grupo">Grupo</label>
-              <select id="grupo" name="grupo" class="form-control select2">
-                <?php
-                    $grupos = new MvcController();
-                    $grupos->mostrarGruposController();
-                ?>
-              </select>
-            </div>
             <div class="form-group col-md-6">
               <label for="carrera">Carrera</label>
               <select id="carrera" name="carrera" class="form-control select2">
@@ -52,12 +43,12 @@
                  ?>
               </select>
             </div>
-          </div>
-          <div class="form-group col-md-5">
-            <label for="fileToUpload">Foto</label>
-            <input type="file" class="form-control-file" name="fileToUpload" id="fileToUpload">
-          </div><br>
-          <button type="submit" id="registrar" name="registrar" style="width: 100%" class="btn btn-primary">Registrar</button>
+            <div class="form-group col-md-6">
+              <label for="fileToUpload">Foto</label>
+              <input type="file" class="form-control-file" name="fileToUpload" id="fileToUpload">
+            </div><br>
+        </div>
+          <button onclick="detectId();" type="submit" id="registrar" name="registrar" style="width: 100%" class="btn btn-primary">Registrar</button>
         </form>
 		</div>
 	</div>

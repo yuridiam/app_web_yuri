@@ -10,7 +10,7 @@
         if(isset($_SESSION["modificado"])){
           if($_SESSION["modificado"]==1){
             echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-                Grupo Modificado Exitósamente. <a href='index.php?action=nuevoalumno' style='font-size: 1.1em'>¿Desea agregar alumnos a este grupo? De click aquí.</a>
+                Grupo Modificado Exitósamente. <a href='index.php?action=agregar_alumno&id=".$_GET['id']."' style='font-size: 1.1em'>¿Desea agregar alumnos a este grupo? De click aquí.</a>
                 <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
                   <span aria-hidden='true'>&times;</span>
                 </button>
@@ -29,7 +29,7 @@
             $editarGrupo->editarGrupoController();
 
           ?>
-          <button type="submit" id="modificar" name="modificar" style="width: 100%" class="btn btn-primary">Modificar</button>
+          <button type="submit" onclick="confirmarUpdate();" id="btn" name="modificar" style="width: 100%" class="btn btn-primary">Modificar</button>
         </form>
 			<br><br><br><br><br><br><br>
 		</div>
