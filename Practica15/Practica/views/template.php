@@ -141,7 +141,8 @@
       return vars;
     }
 
-  //funcion de confirmacion de cierre de sesion, muestra un sweet alert
+  //funcion de confirmacion de cierre de sesion, muestra un sweet alert para saber si estamos completamente seguros
+  //de cerrar la sesiobn
   function confirmarSesion()
   {
     event.preventDefault();
@@ -199,6 +200,8 @@
     });
   }
 
+  //Funcion de jscript que se encarga de mandar un mensaje para saber si estamos seguros de actualizar algun registro, posteriormente pide
+  //la contrasena del usuario para validar que este es el que desea hacer la actualizacion
   function confirmarUpdate(){
     var dbPassword = "<?php echo $_SESSION['password'] ?>";
     event.preventDefault();
@@ -227,6 +230,8 @@
           swal("Exito!", "Registro modificado", "success");
         });
     }
+  //Funcion de jscript que manda un mensaje para saber si estamos seguros de reiniciar todas las sesiones del cuatrimestre, posteriormente
+  //pide la password del superadmin
   function confirmarReset(){
     var dbPassword = "<?php echo $_SESSION['password'] ?>";
     event.preventDefault();
@@ -289,10 +294,14 @@
         });
 
     }
-    //Funcion de JSCRIPT para confirmar si queremos borrar un registro y nos pida la contrasena
-    //para hacerlo
+    //Funcion de JSCRIPT que nos muestra un mensaje para saber si estamos seguro de liberar al alumno, donde nos dice si la sesion ha terminado
+    //o le falta tiempo para terminar, tambien nos dice cuantas horas hemos hecho o si nos pasamos del limite, o en el caso de que
+    //la sesion no haya terminado entonces nos dice que no se contara la hora de la sesion no terminada
     function confirmarSalida(id){
       event.preventDefault();
+      
+      //Operaciones que se hace para saber cuantas horas se han hecho en base a los minutos que han pasado desde la hora de entrada
+      //y la hora en la que estamos (LO MISMO QUE EN PHP)
       var now = new Date();
       var mins = now.getMinutes();
       var hours = now.getHours();
@@ -314,6 +323,8 @@
       var minutes = millis/1000/60;
 
       var valMax = 10000;
+      //Arreglo para saber los minutos de las horas que hay en cada hora y saber cuales minutos se acercan mas, asi conociendo
+      //la hora a la que esta mas cerca el alumno (MISMO QUE EN PHP)
       var max = [60,120,180,240,300,360,420];
       var hora = 0;
       for(i = 0; i<max.length;i++){
@@ -324,6 +335,8 @@
         }
       }
       
+      //Si se desea salir antes de que termine la sesion, (tolerancia: 10 mins) y no han pasado 4 horas entonces nos indica el mensaje
+      //que la sesion no ha terminado y no se contara dicha hora
       if(max[hora-1] - minutes > 10 && hora<4){
         hora--;
         event.preventDefault();
@@ -343,6 +356,7 @@
             }
         );
 
+        //Si ya pasaron 4 horas entonces solo noes muestra el mensaje que la sesion ya no se tomara en cuenta
       }else if(hora >= 4){
          swal({
           title: "Vaya!",
@@ -358,6 +372,7 @@
         );
         
       }
+      //De lo contrario se registrara la sesion
       else{
         var url = document.getElementById("btn"+id).href;
         window.location = url;
@@ -367,20 +382,24 @@
   }
 
    
-
+    //Funcion de javascript que permite saber si un alumno ya esta en el grupo para no registrarlo 2 veces
     function verifyStudentInGroup(id_g){
       var e = document.getElementById("alumno");
       var id = e.options[e.selectedIndex].value;
       var id_grupo = id_g;
+      //Funcion AJAX que hace la consulta a la base de datos para saber si el alumno se eneucntra en el grupo que se desea registrar
       $.ajax({
         url:'models/check.php',
         method:"POST",
         data:{check_id : id, check_id2 : id_grupo},
         success: function(data){
+          //Dicha funcion regresa un valor booleano, si regresa un verdadero entonces solo se muestra una sweet alert para advertir que el alumno
+          //se encuentra en este grupo
           if(data == 1){
             swal("Error", "Ya existe el alumno en este grupo", "warning");
           }
           else{
+            //De lo contrario se manda llamar otro metodo de jscript para registrar al alumno
             insertGroupTable(id_grupo);
           }
         },
@@ -388,11 +407,13 @@
         }
       })
     }
+  //Funcion de JSCRIPT para insertar al alumno en el grupo deseado
     function insertGroupTable(id){
       var e = document.getElementById("alumno");
       var id_alumno = e.options[e.selectedIndex].value;
       var id_grupo = id;
 
+      //Funcion en AJAX para insertar al alumno en el grupo
       $.ajax({
         url:'models/check.php',
         method:"POST",
@@ -410,27 +431,32 @@
       })
     }
     
+  //Funcion de JSCRIPT para mostrar los profesores de cada alumno al cambiar los alumnos del select2 en la interfaz para registrar una sesion
     function showTeacherPerStudent(){
       var e = document.getElementById("alumno");
       var maestroSelect = document.getElementById("maestro");
+      //Cada que cambie la opcion en el select2 entonces se limpiara el select2 de los profesores
       for (i = 0; i < maestroSelect.options.length; i++){
         maestroSelect.options[i] = null;
       }
       $('#maestro').empty().trigger("change")
       var id_alumno = e.options[e.selectedIndex].value;
+      //Funcion en ajax para hacer la consulta de los profesores y ponerlos en un select2, donde se obtendran los resultados en un 
+      //objeto tipo JSON ya que pueden ser varios profesores
       $.ajax({
         url:'models/check.php',
         method:"POST",
         data:{id_alumno2 : id_alumno},
         success: function(data){
           if(data){
-            
+            //Se crea una opcion para el select2
             var opt = document.createElement('option');
             opt.value = "";
             opt.innerHTML = "Maestro...";
             maestroSelect.appendChild(opt);
             for(i = 0; i<data.length;i++){
-
+              
+              //Se insertan los profeores en el select2
               var opt = document.createElement('option');
               opt.value = data[i][1];
               opt.innerHTML = data[i][0];
@@ -445,6 +471,8 @@
         },
         dataType:"json"
       })
+      //Funcion en ajax para cada que cambie el alumno, cambie la foto que esta registrada en la base de datos, y se muestre en la parte inferior
+      //de la interfaz para registrar una sesion nueva
       $.ajax({
         url:'models/check.php',
         method:"POST",
@@ -464,14 +492,16 @@
 
     }
 
+    //Funcion de jscript que nos permite conocer si un alumno ha llegado tarde a la sesion, teniendo como tolerancia solo 10 minutos, si se ha 
+    //excedido este limite de tolerancia entonces no se hace ni una insercion en la tabla temporal sesion
     function detectStudentLate(){
       var now = new Date();
       var mins = now.getMinutes();
-      alert(now);
       if(mins>10){
         swal("Error", "Los minutos de tolerancia se han agotado", "warning");
         event.preventDefault();
       }
+      //Si no ha excedido el limite de los 10 minutos entonces se hace una consulta para saber si el alumno ya esta en una sesion
       else{
         var id_alumno_sesion = document.getElementById("alumno").value;
         $.ajax({
@@ -480,9 +510,11 @@
           data:{id_alumno_sesion : id_alumno_sesion},
           success: function(data){
             if(data){
+              //Si la consulta regreso un verdadero entonces solo nos muestra un sweet alert diciendo que este alumno ya esta en sesion
               if(data == 1){
                 swal("Error!", "El alumno ya se encuentra en sesion", "error");
               }
+              //De lo contrario se procede a consultar si la actividad que desea se encuentra disponible
               else{
                 checkAvailability();
               }
@@ -499,17 +531,21 @@
 
     }
 
+  //Funcion de JSCRIPT para conocer si la actividad a la que desea entrar el usuario esta disponible
     function checkAvailability(){
       var actSelect = document.getElementById("act");
       var id_actividad = actSelect.options[actSelect.selectedIndex].value;
+      //Funcion AJAX para conocer cuantos lugares hay de dicha actividad
       $.ajax({
         url:'models/check.php',
         method:"POST",
         data:{id_actividad : id_actividad},
         success: function(data){
           if(data){
+            //Si los lugares es mayor a 0 entonces se registra la sesion
             if(data>0){
               registrarSesion(data);
+            //De lo contrario solo nos muestra un sweet alert que la actividad ya no se encuentra disponible
             }else{
               swal("Error!", "Esta actividad ya no esta disponible", "error");
             }
@@ -521,6 +557,7 @@
       })
     }
 
+  //Funcion de JSCRIPT para registrar la sesion en su respectiva tabla temporal teniendo como parametros todos lo datos de la sesion
     function registrarSesion(lugarNuevo){
       var alumnoSelect = document.getElementById("alumno");
       var id_alumno = alumnoSelect.options[alumnoSelect.selectedIndex].value;
@@ -534,6 +571,7 @@
       var lugares = lugarNuevo;
 
       if(!(id_alumno=="" && id_maestro=="")){
+        //Funcion AJAX para registrar la sesion, donde se restara la actividad que se eligio de la columna lugares
         $.ajax({
         url:'models/check.php',
         method:"POST",

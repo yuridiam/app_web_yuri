@@ -97,7 +97,7 @@ Class MvcController{
 		}
 	}
 
-
+  //Metodo que se encarga de mostrar todos los alumnos que hay en el grupo que se eligio
 	public function mostrarAlumnosGrupoController(){
 		if(isset($_GET['id']))
 		{
@@ -126,6 +126,8 @@ Class MvcController{
 		}
 	}
 
+  //Metodo que hace una consulta en la base de datos en base a la fecha en la que nos encontramos. Con esta fecha buscaremos en que unidad nos encontramos
+  //Y en la interfaz de la sesion se asignara automaticamente la unidad en la que nos encontramos 
 	public function getUnitByDateController(){
 		$datosController =  date("Y-m-d");
 		$respuesta = Datos::getUnitByDateModel($datosController);
@@ -453,6 +455,9 @@ Class MvcController{
 		}
 	}
 
+  //Metodo que se encarga de registrar una sesion en una tabla temporal en la base de datos, que sera donde se tendra control de todas
+  //las sesiones que hay en el dia, en dicha tabla habra un boton para liberar al alumno de la sesion siempre y cuando se hayan cumplido
+  //los requisitos de dicha sesion (tiempo, actividad, etc.)
 	public function registrarSesionController(){
 		if(isset($_POST["registrar"]) && $_POST['alumno']!="" && $_POST['maestro']!=""){
 			
@@ -471,6 +476,7 @@ Class MvcController{
 		}
 	}
 
+  //Metodo que se encarga de hacer la vista de las sesiones que hay hasta el momento
 	public function vistaSesionesActivasController(){
 		$respuesta = Datos::consultarSesionActivaModel();
 		if($respuesta){
@@ -488,35 +494,47 @@ Class MvcController{
 		}
 	}
 
+  //Metodo que se encarga de liberar al alumno en una sesion
 	public function liberarAlumnoController(){
 		if(isset($_GET["idLiberar"])){
 			$datosController = $_GET['idLiberar'];
 			$respuesta = Datos::consultarSesionAlumnoModel($datosController);
 
+      //Arreglo que tiene un conteo de horas en minutos para saber como dependiendo de los minutos que hizo el alumno cuual es la hora
+      //mas cercana a ese alumno
 			$max = array(60,120,180,240,300,360,420);
 
+      //Se trae la hora de entrada del alumno que se pretende liberar
 			$oldHour = explode(":", $respuesta["hora_entrada"]);
+      //Se le quitan los minutos en los que llego tarde para hacer el proceso mas optimizado
 			$newHour = $oldHour[0].":00";
       
       // NOOOOOOOOOOOOOOOOOOW - - - - date('H:i', strtotime('-5 hour'))
+      //Se trae la hora en la que estamos
 			$now = date('H:i', strtotime('-5 hour'));
 
+      //Obtenemos los minutos que han sido transcurrido desde la hora de entrada del alumno hasta la hora en la que estamos
 			$minutes = abs(strtotime($newHour) - strtotime($now)) / 60;
 
 			$valMax = 10000;
+      //Se revisa todo el arreglo de las horas (max) y se obtiene la distancia mas corta entre los minutos transcurridos y todos los valores del arreglo
 			for($i = 0; $i<count($max); $i++){
 				$op = $max[$i] - $minutes;
+        //Si la distancia entre horas es positiva
 				if($op < $valMax && $op>-1){
 					$valMax = $max[$i] - $minutes;
+          //Entonces la hora sera el valor que se obtuvo de ese arreglo, entonces esa es la hora mas cercana a la que esta el alumno
 					$hora = $i+1;
 				}
 			}
 
+      //Si se quiere salir 11+ minutos antes de que se acabe la hora, entonces la hora no se cuenta y se le resta
 			if($max[$hora-1] - $minutes > 10){
 				$hora--;
 				
 			}
 
+      //Si hizo mas de una hora y no sobre paso las 4 horas entonces se hace el registro de la sesion
 			if($hora > 0 && $hora < 4){
 				$datosController = array("id_alumno"=>$respuesta["id_alumno"],
 										 "id_actividad"=>$respuesta["id_actividad"],
@@ -526,13 +544,16 @@ Class MvcController{
 										 "hora_salida"=>$now,
 										 "horas"=>$hora,
 										 "unidad"=>$respuesta["unidad"]);
+        //Se limpia al alumno de la tabla temporal sesion
 				$respuesta2 = Datos::registrarSesionDeAlumno($datosController,"entrada");
 			}
       else{
+        //De lo contrario solo se limpia el alumno de la tabla temporal sesion sin registrar dicha sesion
         $datosController = $respuesta["id_alumno"];
         $respuesta2 = Datos::limpiarAlumnoDeSesion($datosController,"sesion");
           
         }
+      //El lugar de la actividad se le suma un lugar mas debido a que fue liberado el alumno sin importar si cumplio las restricciones o no
       $datosController = $respuesta["id_actividad"];
       $respuesta3 = Datos::reponerActividad($datosController,"actividad");
       echo"<script language='javascript'>window.location='index.php?action=sesiones';</script>";
@@ -672,10 +693,24 @@ Class MvcController{
 	public function cargarImagen(){
 		$ruta="";
 		$target_dir = "uploads/";
+
+    //Se cambia el nombre de la foto obteniendo la fecha en la que estamos, asi como los milisegundos, para corroborar
+    //que se pueda subir la misma foto, porque cada milisegundo cambiara el nombre con dicho mlisegundo
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+		$micro_date = microtime();
+    $date_array = explode(" ",$micro_date);
+    $date = date("Y-m-dH-i-s",$date_array[1]);
+
+    $oldName = basename($_FILES["fileToUpload"]["name"]);
+    $photoName = explode(".", $oldName);
+    $newName = $photoName[0] . "_" . $date . "." .$photoName[1];       
+
+    $_FILES["fileToUpload"]["name"] = $newName;
+
+		$target_file = $target_dir . $newName;
 		$uploadOk = 1;
 		$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-		// Check if image file is a actual image or fake image
+    // Check if image file is a actual image or fake image
 		if(isset($_POST["aceptar"])) {
 		    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
 		    if($check !== false) {
@@ -830,6 +865,7 @@ Class MvcController{
 		}
 	}
   
+  //Funcion que se encarga de obtener los reportes de las sesiones de cada alumno
   public function vistaReporteController(){
    
 		$respuesta = Datos::consultarReporteModel();
