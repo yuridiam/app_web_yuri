@@ -19,7 +19,7 @@
   				<div class="col-xs-12 col-sm-4" >
   					<div class="card border-primary mb-3">
   							<div class="card-body text-primary">
-                  <h5 style="color: #000; font-weight: bold"><?php echo $alumnos; ?> ALUMNOS REGISTRADOS</h5>
+                  <h6 style="color: #000; font-weight: bold"><?php echo $alumnos; ?> ALUMNOS REGISTRADOS</h6>
   						  </div>
   						<div class="card-footer"><a href="index.php?action=alumnos">Ir a alumnos</a></div>
 					</div>
@@ -27,7 +27,7 @@
   				<div class="col-xs-12 col-sm-4">
   					<div class="card border-primary mb-3">
   							<div class="card-body text-primary">
-    					   <h5 style="color: #000; font-weight: bold"><?php echo $profesores; ?> PROFESORES REGISTRADOS</h5>
+    					   <h6 style="color: #000; font-weight: bold"><?php echo $profesores; ?> PROFESORES REGISTRADOS</h6>
   						</div>
   						<div class="card-footer"><a href="index.php?action=profesores">Ir a profesores</a></div>
 					</div>
@@ -35,7 +35,7 @@
   				<div class="col-xs-12 col-sm-4">
   					<div class="card border-primary mb-3">
   							<div class="card-body text-primary">
-    						<h5 style="color: #000; font-weight: bold"><?php echo $grupos; ?> GRUPOS REGISTRADOS</h5>
+    						<h6 style="color: #000; font-weight: bold"><?php echo $grupos; ?> GRUPOS REGISTRADOS</h6>
   						</div>
   						<div class="card-footer"><a href="index.php?action=grupos">Ir a grupos</a></div>
 					</div>

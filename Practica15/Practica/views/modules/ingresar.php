@@ -1,5 +1,5 @@
 <div style="background:url(views/bg.jpg) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; min-height: 100%; height: auto !important; position: fixed;	top:0; left:0;">
-	<div class="login-box" style="margin-left: 100px" >
+	<div class="login-box" style="margin-left: 70px; width: 390px" >
 	  <div class="login-logo">
 	    <a style="font-size: 0.8em; color: white; font-weight: bold"><b style="font-weight: bold; color: #0087FF">SISTEMA DE </b>CENTRO<br> DE APRENDIZAJE DE INGLÉS</a>
 	  </div>

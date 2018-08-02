@@ -18,26 +18,29 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
-      <li class="nav-item active" style="margin-left: 70px">
+      <li class="nav-item active">
         <a class="nav-link" href="index.php?action=inicioadmin">Inicio <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item" style="margin-left: 10px">
         <a class="nav-link" href="index.php?action=alumnos">Alumnos</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=profesores" style="margin-left: 10px">Profesores</a>
+        <a class="nav-link" href="index.php?action=profesores" style="margin-left: 5px">Profesores</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=actividades" style="margin-left: 10px">Actividades</a>
+        <a class="nav-link" href="index.php?action=actividades" style="margin-left: 5px">Actividades</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=grupos" style="margin-left: 10px">Grupos</a>
+        <a class="nav-link" href="index.php?action=grupos" style="margin-left: 5px">Grupos</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=sesiones" style="margin-left: 10px">Sesiones</a>
+        <a class="nav-link" href="index.php?action=unidades" style="margin-left: 5px">Unidades</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?action=reportes" style="margin-left: 10px">Reporte</a>
+        <a class="nav-link" href="index.php?action=sesiones" style="margin-left: 5px">Sesiones</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="index.php?action=reportes" style="margin-left: 5px">Reporte</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

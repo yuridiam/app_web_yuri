@@ -18,7 +18,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown" style="">
     <ul class="navbar-nav">
-        <li class="nav-item active" style="margin-left: 70px">
+        <li class="nav-item active">
             <a class="nav-link" href="index.php?action=iniciousuario">Inicio <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item active">

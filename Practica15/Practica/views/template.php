@@ -230,6 +230,7 @@
           swal("Exito!", "Registro modificado", "success");
         });
     }
+ 
   //Funcion de jscript que manda un mensaje para saber si estamos seguros de reiniciar todas las sesiones del cuatrimestre, posteriormente
   //pide la password del superadmin
   function confirmarReset(){

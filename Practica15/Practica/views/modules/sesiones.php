@@ -3,11 +3,11 @@
 	<div class="jumbotron" >
 		<div class="col-sm-10 mx-auto">
       <div class="row">
-        <div class="col-xs-12 col-sm-6">
+        <div class="col-xs-12 col-sm-8">
 			      <h1><a style="font-weight: bold; font-size: 1.3em">SESIONES EN CURSO</a></h1>
         </div>
-        <div class="col-xs-12 col-sm-6">
-            <a href="index.php?action=nuevasesion"><button type="button" class="btn btn-primary btn-sm" style="margin-top: 30px; margin-left: 440px; background-color: #0087FF">Registrar Sesión</button></a>
+        <div class="col-xs-12 col-sm-4">
+            <a href="index.php?action=nuevasesion"><button type="button" class="btn btn-primary btn-sm" style="margin-top: 30px; margin-left: 270px; background-color: #0087FF">Registrar Sesión</button></a>
         </div>
       </div>
 			<hr>

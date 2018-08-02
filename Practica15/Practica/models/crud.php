@@ -5,6 +5,22 @@ require_once("conexion.php");
 //Clase general que contiene todos los modelos que consume el controlador principal y que exitene la clase conexion que se encuentra en el modelo conexion
 Class Datos extends Conexion{
 
+  public function vistaUnidadesModel($tabla){
+    $stmt = Conexion::conectar()->prepare("SELECT * from $tabla");
+    $stmt->execute();
+		return $stmt->fetchAll();
+  }
+  
+  
+  public function actualizarUnidadesModel($tabla,$datosModel){
+    $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_inicio = :inicio, fecha_fin = :fin WHERE id_unidad= :id");
+    $stmt->bindParam('inicio',$datosModel["inicio"]);
+		$stmt->bindParam('fin',$datosModel["fin"]);
+    $stmt->bindParam('id',$datosModel["id"]);
+    return $stmt->execute();
+		$stmt->close();
+    
+  }
 	public function ingresoUsuarioModel($datosController,$tabla){
 
 		$stmt = Conexion::conectar()->prepare("SELECT tipo_usuario FROM $tabla WHERE usuario = :u AND pass = :c AND eliminado=0");
@@ -56,12 +72,12 @@ Class Datos extends Conexion{
 		return $stmt->fetchAll();
 		$stmt->close();
 	}
-  public function reiniciarModel(){
-    $stmt = Conexion::conectar()->prepare("DELETE FROM entrada");
+	public function reiniciarModel(){
+		$stmt = Conexion::conectar()->prepare("DELETE FROM entrada");
 		$stmt->execute();
-    $stmt = Conexion::conectar()->prepare("ALTER TABLE entrada AUTO_INCREMENT=1");
-    return $stmt->execute();
-  }
+		$stmt = Conexion::conectar()->prepare("ALTER TABLE entrada AUTO_INCREMENT=1");
+		return $stmt->execute();
+	}
 	public function consultarGruposModel(){
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM grupo WHERE  eliminado=0");
 		$stmt->execute();
@@ -163,7 +179,6 @@ Class Datos extends Conexion{
 	//Este modelo recibe como parametros los datos de un alumno y el nombre de la tabla en la base de datos para realizar una consulta update y actualizar los datos devolviendo si fue exitosa o no
 	public function modificarAlumnoModel($datosController, $tabla){
 
-
 		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET matricula_alumno = :matricula, nombre_alumno= :nombre, id_carrera= :carrera, img_alumno= :foto WHERE id_alumno= :id");
 
 		//$stmt->bindParam(':m',$datosController["contra"]);
@@ -188,17 +203,17 @@ Class Datos extends Conexion{
 	//Este modelo registra un profesor en la base de datos recibiendo los datos en un array y el nombre de la tabla.
 	public function registrarProfesorModel($datosController, $tabla){
 
-    $emp = $datosController["emp"];
-    $nombre = $datosController["nombre"];
-    $fechaN = $datosController["fechaNa"];
-    $tel = $datosController["telefono"];
-    $dir = $datosController["direcc"];
-    $us = $datosController["usuario"];
-    $con = $datosController["contra"];
-    $foto = $datosController["foto"];
-    
+		$emp = $datosController["emp"];
+		$nombre = $datosController["nombre"];
+		$fechaN = $datosController["fechaNa"];
+		$tel = $datosController["telefono"];
+		$dir = $datosController["direcc"];
+		$us = $datosController["usuario"];
+		$con = $datosController["contra"];
+		$foto = $datosController["foto"];
+
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (numero_empleado, nombre_maestro, telefono_maestro, direccion_maestro, fecha_nac, img_maestro, usuario, pass, tipo_usuario) VALUES('$emp','$nombre', '$tel','$dir', '$fechaN', '$foto', '$us', '$con', 2)");
-    
+
 		/*$stmt->bindParam(':emp',$datosController["emp"]);
 		$stmt->bindParam(':nombre',$datosController["nombre"]);
 		$stmt->bindParam(':fechaN',$datosController["fechaNa"]);
@@ -207,7 +222,7 @@ Class Datos extends Conexion{
 		$stmt->bindParam(':us',$datosController["usuario"]);
 		$stmt->bindParam(':con',$datosController["contra"]);
 		$stmt->bindParam(':foto',$datosController["foto"]);*/
-    
+
 
 		return $stmt->execute();
 		$stmt->close();
@@ -249,20 +264,20 @@ Class Datos extends Conexion{
 		return $stmt->execute();
 		$stmt->close();
 	}
-  
-  public function reponerActividad($datosModel,$tabla){
-    $stmt = Conexion::conectar()->prepare("SELECT lugares from actividad where id_actividad = '$datosModel'");
-    $stmt->execute();
-    $actividad = $stmt->fetch(PDO::FETCH_NUM);
-    
-    
-    $new = $actividad[0]+1;
-    
-    $stmt = Conexion::conectar()->prepare("UPDATE actividad SET lugares = $new where id_actividad = '$datosModel'");
-    return $stmt->execute();
+
+	public function reponerActividad($datosModel,$tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT lugares from actividad where id_actividad = '$datosModel'");
+		$stmt->execute();
+		$actividad = $stmt->fetch(PDO::FETCH_NUM);
+
+
+		$new = $actividad[0]+1;
+
+		$stmt = Conexion::conectar()->prepare("UPDATE actividad SET lugares = $new where id_actividad = '$datosModel'");
+		return $stmt->execute();
 		$stmt->close();
-  }
-  
+	}
+
   //Este modelo elimina logicamente un registro de profesor en la base de datos.
 	public function eliminarProfesorModel($id){
 
@@ -417,15 +432,15 @@ Class Datos extends Conexion{
 		return $stmt->fetchAll();
 		$stmt->close();
 	}
-  
-  public function consultarHorasModel($id){
+
+	public function consultarHorasModel($id){
 		$stmt = Conexion::conectar()->prepare("select alumno.matricula_alumno, alumno.nombre_alumno, entrada.unidad, sum(entrada.horas)as 'total' from entrada inner join alumno on entrada.id_alumno = alumno.id_alumno WHERE entrada.id_maestro = '$id' group by entrada.unidad, entrada.id_alumno");
 		$stmt->execute();
 		return $stmt->fetchAll();
 		$stmt->close();
 	}
 
-  public function consultarIdMaestroModel($usuario){
+	public function consultarIdMaestroModel($usuario){
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM maestro WHERE usuario = '$usuario'");
 		$stmt->execute();
 		return $stmt->fetchAll();
@@ -433,13 +448,23 @@ Class Datos extends Conexion{
 	}
 
 
-  public function consultarReporteModel($id){
-		$stmt = Conexion::conectar()->prepare("select alumno.matricula_alumno, alumno.nombre_alumno, entrada.unidad, sum(entrada.horas)as 'total' from entrada inner join alumno on entrada.id_alumno = alumno.id_alumno group by entrada.unidad, entrada.id_alumno");
+	public function consultarReporteModel(){
+		$stmt = Conexion::conectar()->prepare("select alumno.id_alumno,alumno.matricula_alumno, alumno.nombre_alumno, entrada.unidad, (sum(entrada.horas) DIV 3) as 'total', MAX(maestro.nombre_maestro) as maestro, MAX(grupo.codigo_grupo) as grupo from entrada inner join alumno on entrada.id_alumno = alumno.id_alumno inner join maestro on entrada.id_maestro = maestro.id_maestro inner join grupo on grupo.id_maestro = entrada.id_maestro group by entrada.unidad, entrada.id_alumno");
 		$stmt->execute();
 		return $stmt->fetchAll();
 		$stmt->close();
 	}
 
+	public function vistaDetalleModel($datosModel, $table){
+		$stmt = Conexion::conectar()->prepare("SELECT alumno.matricula_alumno, alumno.nombre_alumno, entrada.fecha, entrada.hora_entrada, entrada.hora_salida, actividad.nombre_actividad, entrada.horas from $table inner join alumno on alumno.id_alumno = entrada.id_alumno inner join actividad on entrada.id_actividad = actividad.id_actividad where entrada.id_alumno = :id_alumno AND unidad = :unidad");
+
+		$stmt->bindParam(':id_alumno',$datosModel["id"]);
+		$stmt->bindParam(':unidad',$datosModel["unidad"]);
+		$stmt->execute();
+		return $stmt->fetchAll();
+		$stmt->close();
+
+	}
 
 
 }

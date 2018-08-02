@@ -148,7 +148,7 @@ body {}
             </div>
             <div class="form-group col-md-4">
               <label for="entrada">Hora de entrada</label>
-              <input type="time" class="form-control" id="entrada" name="entrada" value="<?php echo date('H:i', strtotime('-5 hour'));?>" required readonly="">
+              <input type="time" class="form-control" id="entrada" name="entrada" value="<?php echo date('H:i', strtotime('-7 hour'));?>" required readonly="">
             </div>
             <div class="form-group col-md-4">
               <label for="unidad">Unidad</label>
